@@ -27,7 +27,6 @@ let JwtStrategy = exports.JwtStrategy = class JwtStrategy extends (0, passport_1
         this.userService = userService;
     }
     async validate(payload) {
-        console.log(payload);
         return this.userService.getById(payload.userId);
     }
 };

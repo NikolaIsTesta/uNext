@@ -17,6 +17,12 @@ const postgresErrorCode_enum_1 = require("../database/postgresErrorCode.enum");
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
 let AuthenticationService = exports.AuthenticationService = class AuthenticationService {
+    save(newFile) {
+        throw new Error('Method not implemented.');
+    }
+    create(arg0) {
+        throw new Error('Method not implemented.');
+    }
     constructor(usersService, jwtService, configService) {
         this.usersService = usersService;
         this.jwtService = jwtService;

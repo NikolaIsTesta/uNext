@@ -9,6 +9,12 @@ import TokenPayload from './tokenPayload.interface';
 
 @Injectable()
 export class AuthenticationService {
+  save(newFile: void) {
+    throw new Error('Method not implemented.');
+  }
+  create(arg0: { key: string; url: string; }) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -30,7 +36,6 @@ export class AuthenticationService {
         throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
       }
       throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
-
     }
   }
   

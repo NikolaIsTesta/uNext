@@ -1,33 +1,71 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import PostgresErrorCode from 'src/database/postgresErrorCode.enum';
 
 @Injectable()
 export class SubjectsService {
   constructor(private readonly prismaService: PrismaService) {}
-  create(createSubjectDto: CreateSubjectDto) {
-    return 'This action adds a new subject';
+  async create(createSubjectDto: CreateSubjectDto, userId: number) {
+    try {
+    createSubjectDto.id_teacher = userId;
+    return await this.prismaService.subject.create({
+      data: createSubjectDto,
+    });
+  } catch (error) {
+    if (error?.code === PostgresErrorCode.UniqueViolation) {
+      throw new HttpException('Subject with that name already exists', HttpStatus.BAD_REQUEST);
+    }
+    throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
   }
 
   async findAll() {
-    return await this.prismaService.subjects.findMany();
+    return await this.prismaService.subject.findMany();
   }
 
   async findOne(id: number) {
-    const subject = await this.prismaService.subjects.findUnique({
+    const subject = await this.prismaService.subject.findUnique({
       where: {
         id,
       },
     });
-    return subject;
+    if (subject) {
+      return subject;
+    }
+    throw new HttpException(
+      'Subject with this id does not exist',
+      HttpStatus.NOT_FOUND,
+    );
   }
 
-  update(id: number, updateSubjectDto: UpdateSubjectDto) {
-    return `This action updates a #${id} subject`;
+  async update(id: number, updateSubjectDto: UpdateSubjectDto) {
+    return await this.prismaService.subject.update({
+      where: { id: id },
+      data: updateSubjectDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} subject`;
+  async remove(id: number) {
+    return await this.prismaService.subject.delete({
+      where: { id: id },
+    });
+  }
+
+  async getByName(name: string) {
+    const subjects = await this.prismaService.subject.findUnique({
+      where: {
+        name,
+      },
+    });
+    if (subjects) {
+      return subjects;
+    }
+    throw new HttpException(
+      'Subject with this name does not exist',
+      HttpStatus.NOT_FOUND,
+    );
   }
 }

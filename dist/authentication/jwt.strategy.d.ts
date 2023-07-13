@@ -12,6 +12,8 @@ export declare class JwtStrategy extends JwtStrategy_base {
         name: string;
         email: string;
         password: string;
+        role: import(".prisma/client").Role;
+        id_avatar: number;
     }, unknown> & {}>;
 }
 export {};

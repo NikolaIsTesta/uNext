@@ -12,29 +12,60 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubjectsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const postgresErrorCode_enum_1 = require("../database/postgresErrorCode.enum");
 let SubjectsService = exports.SubjectsService = class SubjectsService {
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
-    create(createSubjectDto) {
-        return 'This action adds a new subject';
+    async create(createSubjectDto, userId) {
+        try {
+            createSubjectDto.id_teacher = userId;
+            return await this.prismaService.subject.create({
+                data: createSubjectDto,
+            });
+        }
+        catch (error) {
+            if (error?.code === postgresErrorCode_enum_1.default.UniqueViolation) {
+                throw new common_1.HttpException('Subject with that name already exists', common_1.HttpStatus.BAD_REQUEST);
+            }
+            throw new common_1.HttpException('Something went wrong', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async findAll() {
-        return await this.prismaService.subjects.findMany();
+        return await this.prismaService.subject.findMany();
     }
     async findOne(id) {
-        const subject = await this.prismaService.subjects.findUnique({
+        const subject = await this.prismaService.subject.findUnique({
             where: {
                 id,
             },
         });
-        return subject;
+        if (subject) {
+            return subject;
+        }
+        throw new common_1.HttpException('Subject with this id does not exist', common_1.HttpStatus.NOT_FOUND);
     }
-    update(id, updateSubjectDto) {
-        return `This action updates a #${id} subject`;
+    async update(id, updateSubjectDto) {
+        return await this.prismaService.subject.update({
+            where: { id: id },
+            data: updateSubjectDto,
+        });
     }
-    remove(id) {
-        return `This action removes a #${id} subject`;
+    async remove(id) {
+        return await this.prismaService.subject.delete({
+            where: { id: id },
+        });
+    }
+    async getByName(name) {
+        const subjects = await this.prismaService.subject.findUnique({
+            where: {
+                name,
+            },
+        });
+        if (subjects) {
+            return subjects;
+        }
+        throw new common_1.HttpException('Subject with this name does not exist', common_1.HttpStatus.NOT_FOUND);
     }
 };
 exports.SubjectsService = SubjectsService = __decorate([

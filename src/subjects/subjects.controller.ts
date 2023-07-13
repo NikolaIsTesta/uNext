@@ -7,35 +7,42 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
   Res,
+  Req,
 } from '@nestjs/common';
 import { SubjectsService } from './subjects.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
-import { LocalAuthenticationGuard } from 'src/authentication/localAuthentication.guard';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
+import { UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import RoleGuard from '../guards/checkingRoles.guard';
+import { ApiTags } from '@nestjs/swagger';
+import RequestWithUser from 'src/authentication/requestWithUser.interface';
+import AuthorGuard from 'src/guards/author_guard';
 
+@ApiTags('subjects')
 @Controller('subjects')
 export class SubjectsController {
   constructor(private readonly subjectsService: SubjectsService) {}
 
   @Post()
-  create(@Body() createSubjectDto: CreateSubjectDto) {
-    return this.subjectsService.create(createSubjectDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.subjectsService.findAll();
+  @UseGuards(JwtAuthenticationGuard)
+  create(@Body() createSubjectDto: CreateSubjectDto, @Req() request: RequestWithUser) {
+    return this.subjectsService.create(createSubjectDto, request.user.id);
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtAuthenticationGuard, AuthorGuard)
   async findOne(@Param('id') id: string) {
     const subject = await this.subjectsService.findOne(+id);
-    console.log(subject);
     return subject;
+  }
+ // @UseGuards(RoleGuard('ADMIN'))
+  @Get()
+  findAll() {
+    return this.subjectsService.findAll();
   }
 
   @Patch(':id')

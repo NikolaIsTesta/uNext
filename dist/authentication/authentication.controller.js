@@ -13,11 +13,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthenticationController = void 0;
+const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const authentication_service_1 = require("./authentication.service");
 const register_dto_1 = require("./dto/register.dto");
 const localAuthentication_guard_1 = require("./localAuthentication.guard");
 const jwt_authentication_guard_1 = require("./jwt-authentication.guard");
+const swagger_1 = require("@nestjs/swagger");
 let AuthenticationController = exports.AuthenticationController = class AuthenticationController {
     constructor(authenticationService) {
         this.authenticationService = authenticationService;
@@ -44,6 +46,7 @@ let AuthenticationController = exports.AuthenticationController = class Authenti
 };
 __decorate([
     (0, common_1.Post)('register'),
+    openapi.ApiResponse({ status: 201, type: Object }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [register_dto_1.default]),
@@ -53,6 +56,7 @@ __decorate([
     (0, common_1.HttpCode)(200),
     (0, common_1.UseGuards)(localAuthentication_guard_1.LocalAuthenticationGuard),
     (0, common_1.Post)('log-in'),
+    openapi.ApiResponse({ status: 200 }),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
@@ -62,6 +66,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_authentication_guard_1.default),
     (0, common_1.Post)('log-out'),
+    openapi.ApiResponse({ status: 201 }),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
@@ -71,13 +76,15 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_authentication_guard_1.default),
     (0, common_1.Get)(),
+    openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthenticationController.prototype, "authenticate", null);
 exports.AuthenticationController = AuthenticationController = __decorate([
-    (0, common_1.Controller)('authentication'),
+    (0, swagger_1.ApiTags)('auth'),
+    (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [authentication_service_1.AuthenticationService])
 ], AuthenticationController);
 //# sourceMappingURL=authentication.controller.js.map

@@ -22,10 +22,10 @@ let AuthenticationModule = exports.AuthenticationModule = class AuthenticationMo
 exports.AuthenticationModule = AuthenticationModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            subjects_module_1.SubjectsModule,
             users_module_1.UsersModule,
             passport_1.PassportModule,
             config_1.ConfigModule,
-            subjects_module_1.SubjectsModule,
             jwt_1.JwtModule.registerAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],

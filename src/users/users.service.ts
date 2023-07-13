@@ -1,24 +1,31 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-//src было вместо точек
 import CreateUserDto from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class UsersService {
-  findOne(arg0: number) {
-    throw new Error('Method not implemented.');
+
+  constructor(
+    private readonly filesService: FilesService,
+    private readonly prismaService: PrismaService,
+  ) {}
+
+  static findOne(userId: any) {
+      throw new Error('Method not implemented.');
   }
-  remove(arg0: number) {
-    throw new Error('Method not implemented.');
+  async remove(id: number) {
+    return await this.prismaService.user.delete({
+      where: { id: id },
+    });
   }
-  update(arg0: number, updateUserDto: UpdateUserDto) {
-    throw new Error('Method not implemented.');
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return await this.prismaService.user.update({
+      where: { id: id },
+      data: updateUserDto,
+    });
   }
-  findOneById(arg0: number) {
-    throw new Error('Method not implemented.');
-  }
-  constructor(private readonly prismaService: PrismaService) {}
 
   async findAll() {
     return await this.prismaService.user.findMany();
@@ -40,6 +47,7 @@ export class UsersService {
   }
 
   async create(studentData: CreateUserDto) {
+    //TODO: СОЗДАТЬ СОЗДАНИЕ ФАЙЛА
     const newUser = await this.prismaService.user.create({
       data: studentData,
     });
@@ -59,5 +67,25 @@ export class UsersService {
       'User with this id does not exist',
       HttpStatus.NOT_FOUND,
     );
+  }
+
+  async addAvatar(userId: number, imageBuffer: Buffer, filename: string) {
+    const avatar = await this.filesService.uploadPublicFile(imageBuffer, filename);
+    const user = await this.getById(userId);
+    if (user.id_avatar != 1)
+      this.filesService.deletePublicFile(user.id_avatar);
+    user.id_avatar = avatar.id;
+    await this.prismaService.user.update({
+      where: { id: userId },
+      data: user
+    });
+    return avatar;
+  }
+
+  async getAvatar(userId: number)
+  {
+    const user = await this.getById(userId);
+    const file = this.filesService.getById(user.id_avatar);
+    return (await file).url;
   }
 }

@@ -10,15 +10,116 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model User {
-  id    Int     @id @default(autoincrement())
-  name String
-  email String @unique
-  password String
+enum Role {
+  USER
+  ADMIN
+  TEACHER
 }
 
-model Subjects {
-  id    Int     @id @default(autoincrement())
-  name String
+enum TypeOfQuestion {
+  VICTORINA
+  TEXTANSWER
+}
+
+model PublicFile {
+  id   Int    @id @default(1)
+  url  String
+  key  String @default("default.png")
+  User User[]
+}
+
+model User {
+  id              Int              @id @default(autoincrement())
+  name            String
+  email           String           @unique
+  password        String
+  disciplineInfos DisciplineInfo[]
+  Subject         Subject[]
+  role            Role             @default(USER)
+  id_avatar       Int              @default(1)
+  avatar          PublicFile?      @relation(fields: [id_avatar], references: [id])
+  UserAnswers     UserAnswer[]
+}
+
+model Subject {
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
+  description     String
+  //TODO: поправить потом 
+  id_teacher      Int?
+  teacher         User?            @relation(fields: [id_teacher], references: [id])
+  disciplineInfos DisciplineInfo[]
+  createdAt       DateTime         @default(now())
+  storage         String?          @default(".uploads/default.jpg") @db.VarChar(255)
+  deadline        DateTime?
+  tasks           Task[]
+}
+
+model DisciplineInfo {
+  id                 Int     @id @default(autoincrement())
+  id_subject         Int
+  subject            Subject @relation(fields: [id_subject], references: [id])
+  id_student         Int
+  student            User?   @relation(fields: [id_student], references: [id])
+}
+
+model Task {
+  id           Int          @id @default(autoincrement())
+  description  String
+  Title        String
+  id_subject   Int
+  subject      Subject      @relation(fields: [id_subject], references: [id])
+  totalMark Int @default(0)
+  questions    Question[]
+  usersAnswers UserAnswer[]
+}
+
+model Question {
+  id          Int            @id @default(autoincrement())
+  title       String
+  type        TypeOfQuestion
+  id_task     Int
+  task        Task           @relation(fields: [id_task], references: [id])
+  textAnswers TextAnswer[]
+  victorines  Victorina[]
+}
+
+model TextAnswer {
+  id          Int          @id @default(autoincrement())
+  answer      String
+  mark        Int
+  userAnswer  String       @unique
+  id_question Int
+  question    Question     @relation(fields: [id_question], references: [id])
+  userAnswers UserAnswer[]
+}
+
+model Victorina {
+  id          Int      @id @default(autoincrement())
+  id_question Int
+  question    Question @relation(fields: [id_question], references: [id])
+  options     Option[]
+}
+
+model Option {
+  id           Int          @id @unique @default(autoincrement())
+  Text         String
+  isCorrect    Boolean
+  mark         Int
+  userAnswer   Boolean
+  id_victorina Int
+  victorina    Victorina    @relation(fields: [id_victorina], references: [id])
+  userAnswers  UserAnswer[]
+}
+
+model UserAnswer {
+  id              Int    @id @default(autoincrement())
+  id_student      Int
+  id_task         Int?
+  id_textAnswer   Int?
+  id_optionAnswer Int?
+  student User @relation(fields: [id_student], references: [id])
+  task Task? @relation(fields: [id_task], references: [id])
+  textAnswers TextAnswer? @relation(fields: [id_textAnswer], references: [id])
+  OptionAnswers Option? @relation(fields: [id_optionAnswer], references: [id])
 }

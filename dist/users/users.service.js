@@ -12,21 +12,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const files_service_1 = require("../files/files.service");
 let UsersService = exports.UsersService = class UsersService {
-    findOne(arg0) {
-        throw new Error('Method not implemented.');
-    }
-    remove(arg0) {
-        throw new Error('Method not implemented.');
-    }
-    update(arg0, updateUserDto) {
-        throw new Error('Method not implemented.');
-    }
-    findOneById(arg0) {
-        throw new Error('Method not implemented.');
-    }
-    constructor(prismaService) {
+    constructor(filesService, prismaService) {
+        this.filesService = filesService;
         this.prismaService = prismaService;
+    }
+    static findOne(userId) {
+        throw new Error('Method not implemented.');
+    }
+    async remove(id) {
+        return await this.prismaService.user.delete({
+            where: { id: id },
+        });
+    }
+    async update(id, updateUserDto) {
+        return await this.prismaService.user.update({
+            where: { id: id },
+            data: updateUserDto,
+        });
     }
     async findAll() {
         return await this.prismaService.user.findMany();
@@ -59,9 +63,27 @@ let UsersService = exports.UsersService = class UsersService {
         }
         throw new common_1.HttpException('User with this id does not exist', common_1.HttpStatus.NOT_FOUND);
     }
+    async addAvatar(userId, imageBuffer, filename) {
+        const avatar = await this.filesService.uploadPublicFile(imageBuffer, filename);
+        const user = await this.getById(userId);
+        if (user.id_avatar != 1)
+            this.filesService.deletePublicFile(user.id_avatar);
+        user.id_avatar = avatar.id;
+        await this.prismaService.user.update({
+            where: { id: userId },
+            data: user
+        });
+        return avatar;
+    }
+    async getAvatar(userId) {
+        const user = await this.getById(userId);
+        const file = this.filesService.getById(user.id_avatar);
+        return (await file).url;
+    }
 };
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [files_service_1.FilesService,
+        prisma_service_1.PrismaService])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

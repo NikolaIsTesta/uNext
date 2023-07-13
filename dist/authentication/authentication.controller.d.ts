@@ -10,6 +10,8 @@ export declare class AuthenticationController {
         name: string;
         email: string;
         password: string;
+        role: import(".prisma/client").Role;
+        id_avatar: number;
     }, unknown> & {}>;
     logIn(request: RequestWithUser, response: Response): Promise<import("express-serve-static-core").Response<any, Record<string, any>, number>>;
     logOut(request: RequestWithUser, response: Response): Promise<Response<any, Record<string, any>>>;
@@ -18,5 +20,7 @@ export declare class AuthenticationController {
         name: string;
         email: string;
         password: string;
+        role: import(".prisma/client").Role;
+        id_avatar: number;
     }, unknown> & {};
 }
