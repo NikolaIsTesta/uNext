@@ -23,8 +23,8 @@ enum TypeOfQuestion {
 
 model PublicFile {
   id   Int    @id @default(1)
-  url  String
-  key  String @default("default.png")
+  url  String?
+  key  String? @default("default.png")
   User User[]
 }
 

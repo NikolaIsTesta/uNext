@@ -17,9 +17,14 @@ export class FilesService {
   ) {}
 
   async create(createFileDto: CreateFileDto) {
-    await this.prismaService.publicFile.create({
-      data: createFileDto,
-    });
+    /*if (createFileDto == null)
+    {
+      console.log(createFileDto)
+      await this.prismaService.publicFile.create({data:{}})
+    }*/
+      await this.prismaService.publicFile.create({
+        data: createFileDto,
+      });
   }
 
   async uploadPublicFile(dataBuffer: Buffer, filename: string) {

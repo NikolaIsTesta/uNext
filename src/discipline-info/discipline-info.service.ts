@@ -4,11 +4,13 @@ import { UpdateDisciplineInfoDto } from './dto/update-discipline-info.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { DisciplineInfo } from './entities/discipline-info.entity';
+import { SubjectsService } from 'src/subjects/subjects.service';
 
 @Injectable()
 export class DisciplineInfoService {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly subjectsService: SubjectsService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -46,6 +48,20 @@ export class DisciplineInfoService {
     }
     return subcribers;
   }
+
+  async allSign(student_id: number) {
+    const discipline = await this.prismaService.disciplineInfo.findMany({
+      where:{
+        id_student:student_id
+      }
+    })
+    let subjects = [];
+    subjects.length = discipline.length;
+    for (let i = 0; i < discipline.length; i++)
+      subjects[i] = await this.subjectsService.findOne(discipline[i].id_subject); 
+    return subjects;
+  }
+
 
   findOne(id: number) {
     return `This action returns a #${id} disciplineInfo`;

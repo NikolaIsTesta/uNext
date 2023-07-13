@@ -41,9 +41,7 @@ export class UsersService {
   async findAll() {
     return await this.prismaService.user.findMany();
   }
-
-
-
+  
 
   async getByEmail(email: string) {
     const student = await this.prismaService.user.findUnique({
@@ -64,11 +62,15 @@ export class UsersService {
 
 
   async create(studentData: CreateUserDto) {
-    const defaultFile = await this.filesService.getById(1);
-    
+     /*const defaultFile = await this.filesService.getById(1);
+     if (!defaultFile)
+     {
+         this.filesService.create(null)
+    }*/
     const newUser = await this.prismaService.user.create({
       data: studentData,
     });
+    
     return newUser;
   }
 

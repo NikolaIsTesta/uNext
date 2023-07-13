@@ -14,6 +14,17 @@ export class DisciplineInfoController {
     return this.disciplineInfoService.allSub(+id);
   }
 
+
+
+  @Get('subscriptions/:id')
+  allSubscriptions(@Param('id') id: string) {
+    return this.disciplineInfoService.allSign(+id);
+  }
+
+
+
+
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDisciplineInfoDto: UpdateDisciplineInfoDto) {
     return this.disciplineInfoService.update(+id, updateDisciplineInfoDto);
