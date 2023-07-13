@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateDisciplineInfoDto } from './dto/create-discipline-info.dto';
 import { UpdateDisciplineInfoDto } from './dto/update-discipline-info.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -11,14 +11,27 @@ export class DisciplineInfoService {
     private readonly prismaService: PrismaService,
     private readonly usersService: UsersService,
   ) {}
-  async subscribe(subject_id, student_id) {
-    return await this.prismaService.disciplineInfo.create({
-      data: {
+
+   async subscribe(subject_id, student_id) {
+    const subscribed = await this.prismaService.disciplineInfo.findMany({
+      where:
+      {
         id_student: student_id,
-        id_subject: subject_id,
+        id_subject: subject_id
       }
-    });
-  }
+    })
+
+    if (subscribed.length != 0) {
+          console.log(subscribed)
+          throw new HttpException('User has already subscribed to the course', HttpStatus.BAD_REQUEST);
+        }
+        return await this.prismaService.disciplineInfo.create({
+          data: {
+            id_student: student_id,
+            id_subject: subject_id,
+          }   
+        });   
+    }
 
   async allSub(sub_id: number) {
     const discipline = await this.prismaService.disciplineInfo.findMany({
