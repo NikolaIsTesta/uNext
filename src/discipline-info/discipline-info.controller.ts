@@ -9,9 +9,9 @@ import RequestWithUser from 'src/authentication/requestWithUser.interface';
 export class DisciplineInfoController {
   constructor(private readonly disciplineInfoService: DisciplineInfoService) {}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.disciplineInfoService.findOne(+id);
+  @Get('subscribers/:id')
+  allSubscribers(@Param('id') id: string) {
+    return this.disciplineInfoService.allSub(+id);
   }
 
   @Patch(':id')

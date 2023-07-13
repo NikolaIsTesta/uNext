@@ -15,11 +15,19 @@ export class UsersService {
   static findOne(userId: any) {
       throw new Error('Method not implemented.');
   }
+
+
+
+
   async remove(id: number) {
     return await this.prismaService.user.delete({
       where: { id: id },
     });
   }
+
+
+
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     return await this.prismaService.user.update({
       where: { id: id },
@@ -27,9 +35,15 @@ export class UsersService {
     });
   }
 
+
+
+
   async findAll() {
     return await this.prismaService.user.findMany();
   }
+
+
+
 
   async getByEmail(email: string) {
     const student = await this.prismaService.user.findUnique({
@@ -46,8 +60,12 @@ export class UsersService {
     );
   }
 
+
+
+
   async create(studentData: CreateUserDto) {
-    //TODO: СОЗДАТЬ СОЗДАНИЕ ФАЙЛА
+    const defaultFile = await this.filesService.getById(1);
+    
     const newUser = await this.prismaService.user.create({
       data: studentData,
     });
