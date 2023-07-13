@@ -11,13 +11,6 @@ import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard'
 export class UserAnswerController {
   constructor(private readonly userAnswerService: UserAnswerService) {}
 
-
-  @Post()
-  @UseGuards(JwtAuthenticationGuard)
-  create(@Body() createUserAnswerDto: CreateUserAnswerDto, @Req() request: RequestWithUser) {
-    return this.userAnswerService.create(request.user.id);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userAnswerService.findOne(+id);

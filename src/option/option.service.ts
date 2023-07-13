@@ -2,10 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateOptionDto } from './dto/create-option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserAnswerService } from '../user-answer/user-answer.service';
 
 @Injectable()
 export class OptionService {
   constructor(
+    private readonly userAnswerService: UserAnswerService,
     private readonly prismaService: PrismaService,
   ) {}
   async create(createOptionDto: CreateOptionDto) {

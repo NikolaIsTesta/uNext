@@ -22,7 +22,6 @@ export class DisciplineInfoService {
     })
 
     if (subscribed.length != 0) {
-          console.log(subscribed)
           throw new HttpException('User has already subscribed to the course', HttpStatus.BAD_REQUEST);
         }
         return await this.prismaService.disciplineInfo.create({

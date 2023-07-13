@@ -2,10 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTextAnswerDto } from './dto/create-text-answer.dto';
 import { UpdateTextAnswerDto } from './dto/update-text-answer.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserAnswerService } from '../user-answer/user-answer.service';
+import { TaskService } from 'src/task/task.service';
 
 @Injectable()
 export class TextAnswerService {
   constructor(
+    private readonly taskService: TaskService,
     private readonly prismaService: PrismaService,
   ) {}
   async create(createTextAnswerDto: CreateTextAnswerDto) {

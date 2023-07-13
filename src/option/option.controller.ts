@@ -3,11 +3,14 @@ import { OptionService } from './option.service';
 import { CreateOptionDto } from './dto/create-option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { TaskService } from 'src/task/task.service';
 
 @ApiTags('option')
 @Controller('option')
 export class OptionController {
-  constructor(private readonly optionService: OptionService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    private readonly optionService: OptionService) {}
 
   @Post()
   create(@Body() createOptionDto: CreateOptionDto) {

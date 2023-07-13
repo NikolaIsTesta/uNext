@@ -24,7 +24,7 @@ export class DisciplineInfoController {
     return this.disciplineInfoService.remove(+id);
   }
 
-  @Post('subscribe/:id')
+  @Get('subscribe/:id')
   @UseGuards(JwtAuthenticationGuard)
   async subcribe(@Param('id') subject_id: number, @Req() request: RequestWithUser) {
     return this.disciplineInfoService.subscribe(Number(subject_id), request.user.id)

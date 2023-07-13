@@ -11,19 +11,10 @@ export class QuestionService {
     private readonly userAnswerService: UserAnswerService,
   ) {}
 
-  // create(data) {
-  //  return this.prismaService.question.create({
-  //   data: {
-  //     title: data.title,
-  //     type: data.type,
-  //     id_task: data.id_task,
-  //   }
-  //  })
-  // }
 
 
   async create(createQuestionDto: CreateQuestionDto,  userId: number) {
-    this.userAnswerService.create(userId)
+    this.userAnswerService.create(createQuestionDto.id_task, userId)
     return await this.prismaService.question.create({
      data: createQuestionDto,
     })

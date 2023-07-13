@@ -8,12 +8,12 @@ export class UserAnswerService {
   constructor(
     private readonly prismaService: PrismaService,
   ) {}
-  // Автоматически заполняется student_id
-  async create(userId: number) {
-    //createUserAnswerDto.id_student = userId;
+  async create(task_id, userId) {
+
     return await this.prismaService.userAnswer.create({
       data: {
         id_student: userId,
+        id_task: task_id
       }
     });
   }
@@ -33,4 +33,11 @@ export class UserAnswerService {
     );
   }
   
+
+  async update(id: number, updateSubjectDto: UpdateUserAnswerDto) {
+    return await this.prismaService.userAnswer.update({
+      where: { id: id },
+      data: updateSubjectDto,
+    });
+  }
 }

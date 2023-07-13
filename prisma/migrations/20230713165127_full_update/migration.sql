@@ -43,7 +43,6 @@ CREATE TABLE "DisciplineInfo" (
     "id" SERIAL NOT NULL,
     "id_subject" INTEGER NOT NULL,
     "id_student" INTEGER NOT NULL,
-    "quantitySubscribed" INTEGER NOT NULL,
 
     CONSTRAINT "DisciplineInfo_pkey" PRIMARY KEY ("id")
 );
@@ -54,6 +53,7 @@ CREATE TABLE "Task" (
     "description" TEXT NOT NULL,
     "Title" TEXT NOT NULL,
     "id_subject" INTEGER NOT NULL,
+    "totalMark" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
@@ -103,10 +103,9 @@ CREATE TABLE "Option" (
 CREATE TABLE "UserAnswer" (
     "id" SERIAL NOT NULL,
     "id_student" INTEGER NOT NULL,
-    "id_task" INTEGER NOT NULL,
-    "totalMark" INTEGER NOT NULL,
-    "id_textAnswer" INTEGER NOT NULL,
-    "id_optionAnswer" INTEGER NOT NULL,
+    "id_task" INTEGER,
+    "id_textAnswer" INTEGER,
+    "id_optionAnswer" INTEGER,
 
     CONSTRAINT "UserAnswer_pkey" PRIMARY KEY ("id")
 );
@@ -154,10 +153,10 @@ ALTER TABLE "Option" ADD CONSTRAINT "Option_id_victorina_fkey" FOREIGN KEY ("id_
 ALTER TABLE "UserAnswer" ADD CONSTRAINT "UserAnswer_id_student_fkey" FOREIGN KEY ("id_student") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserAnswer" ADD CONSTRAINT "UserAnswer_id_task_fkey" FOREIGN KEY ("id_task") REFERENCES "Task"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserAnswer" ADD CONSTRAINT "UserAnswer_id_task_fkey" FOREIGN KEY ("id_task") REFERENCES "Task"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserAnswer" ADD CONSTRAINT "UserAnswer_id_textAnswer_fkey" FOREIGN KEY ("id_textAnswer") REFERENCES "TextAnswer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserAnswer" ADD CONSTRAINT "UserAnswer_id_textAnswer_fkey" FOREIGN KEY ("id_textAnswer") REFERENCES "TextAnswer"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserAnswer" ADD CONSTRAINT "UserAnswer_id_optionAnswer_fkey" FOREIGN KEY ("id_optionAnswer") REFERENCES "Option"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserAnswer" ADD CONSTRAINT "UserAnswer_id_optionAnswer_fkey" FOREIGN KEY ("id_optionAnswer") REFERENCES "Option"("id") ON DELETE SET NULL ON UPDATE CASCADE;
