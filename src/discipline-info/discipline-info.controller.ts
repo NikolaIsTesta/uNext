@@ -16,28 +16,26 @@ export class DisciplineInfoController {
 
 
 
-  @Get('subscriptions/:id')
-  allSubscriptions(@Param('id') id: string) {
-    return this.disciplineInfoService.allSign(+id);
+  @Get('subscriptions')
+  @UseGuards(JwtAuthenticationGuard)
+  allSubscriptions(@Req() request: RequestWithUser) {
+    return this.disciplineInfoService.allSign(request.user.id);
   }
 
 
 
-
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDisciplineInfoDto: UpdateDisciplineInfoDto) {
-    return this.disciplineInfoService.update(+id, updateDisciplineInfoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.disciplineInfoService.remove(+id);
-  }
 
   @Get('subscribe/:id')
   @UseGuards(JwtAuthenticationGuard)
   async subcribe(@Param('id') subject_id: number, @Req() request: RequestWithUser) {
     return this.disciplineInfoService.subscribe(Number(subject_id), request.user.id)
+  }
+
+
+
+  @Get('find-subscriber/:id')
+  @UseGuards(JwtAuthenticationGuard)
+  findUser(@Param('id') id: string, @Req() request: RequestWithUser) {
+    return this.disciplineInfoService.findOneUser(+id, request.user.id);
   }
 }

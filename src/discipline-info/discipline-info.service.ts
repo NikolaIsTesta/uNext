@@ -63,8 +63,16 @@ export class DisciplineInfoService {
   }
 
 
-  findOne(id: number) {
-    return `This action returns a #${id} disciplineInfo`;
+  async findOneUser(subject_id: number, user_id: number) {
+    const discipline = await this.prismaService.disciplineInfo.findMany({
+      where:{
+        id_student: user_id,
+        id_subject: subject_id
+      }
+    })
+    if (discipline.length == 0)
+      return false
+    return true
   }
 
   update(id: number, updateDisciplineInfoDto: UpdateDisciplineInfoDto) {

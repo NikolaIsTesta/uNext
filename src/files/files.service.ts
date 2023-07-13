@@ -17,7 +17,7 @@ export class FilesService {
   ) {}
 
   async create(createFileDto: CreateFileDto) {
-    /*if (createFileDto == null)
+   /* if (createFileDto == null)
     {
       console.log(createFileDto)
       await this.prismaService.publicFile.create({data:{}})
