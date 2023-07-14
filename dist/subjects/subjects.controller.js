@@ -28,6 +28,9 @@ let SubjectsController = exports.SubjectsController = class SubjectsController {
     create(createSubjectDto, request) {
         return this.subjectsService.create(createSubjectDto, request.user.id);
     }
+    async imTeacher() {
+        return true;
+    }
     async findOne(id) {
         const subject = await this.subjectsService.findOne(+id);
         return subject;
@@ -53,8 +56,16 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SubjectsController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(':id'),
     (0, common_1.UseGuards)(jwt_authentication_guard_1.default, author_guard_1.default),
+    (0, common_1.Get)('access/:id'),
+    openapi.ApiResponse({ status: 200, type: Boolean }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], SubjectsController.prototype, "imTeacher", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    (0, common_1.UseGuards)(jwt_authentication_guard_1.default),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -63,12 +74,14 @@ __decorate([
 ], SubjectsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, common_1.UseGuards)(jwt_authentication_guard_1.default),
     openapi.ApiResponse({ status: 200, type: [Object] }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], SubjectsController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_authentication_guard_1.default, author_guard_1.default),
     (0, common_1.Patch)(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, (0, common_1.Param)('id')),
@@ -78,6 +91,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SubjectsController.prototype, "update", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_authentication_guard_1.default, author_guard_1.default),
     (0, common_1.Delete)(':id'),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, (0, common_1.Param)('id')),

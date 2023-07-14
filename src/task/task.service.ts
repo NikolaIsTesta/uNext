@@ -15,7 +15,7 @@ async create(createTaskDto: CreateTaskDto) {
     return newTask;
   }
 
-
+  
   async allSubTask(sub_id: number) {
     return await this.prismaService.task.findMany({
       where:{

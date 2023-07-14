@@ -20,6 +20,7 @@ const update_user_dto_1 = require("./dto/update-user.dto");
 const platform_express_1 = require("@nestjs/platform-express");
 const jwt_authentication_guard_1 = require("../authentication/jwt-authentication.guard");
 const swagger_1 = require("@nestjs/swagger");
+const checkingRoles_guard_1 = require("../guards/checkingRoles.guard");
 let UsersController = exports.UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -45,6 +46,7 @@ let UsersController = exports.UsersController = class UsersController {
 };
 __decorate([
     (0, common_1.Get)(),
+    (0, common_1.UseGuards)((0, checkingRoles_guard_1.default)('ADMIN')),
     openapi.ApiResponse({ status: 200, type: [Object] }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -52,6 +54,7 @@ __decorate([
 ], UsersController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, common_1.UseGuards)((0, checkingRoles_guard_1.default)('ADMIN')),
     openapi.ApiResponse({ status: 200, type: Object }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
