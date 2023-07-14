@@ -22,8 +22,8 @@ async function bootstrap() {
     .setTitle('Only-up')
     .setDescription('Сваггеры-папашеры')
     .build();
-const document = SwaggerModule.createDocument(app, Swaggerconfig);
-SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, Swaggerconfig);
+  SwaggerModule.setup('api', app, document);
   await app.listen(3000);
 
 }

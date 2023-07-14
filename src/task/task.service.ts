@@ -8,8 +8,8 @@ import { totalmem } from 'os';
 export class TaskService {
   constructor(
     private readonly prismaService: PrismaService,
-  ) {}
-async create(createTaskDto: CreateTaskDto) {
+  ) { }
+  async create(createTaskDto: CreateTaskDto) {
     const newTask = await this.prismaService.task.create({
       data: createTaskDto,
     });
@@ -19,8 +19,8 @@ async create(createTaskDto: CreateTaskDto) {
 
   async allSubTask(sub_id: number) {
     return await this.prismaService.task.findMany({
-      where:{
-        id_subject:sub_id
+      where: {
+        id_subject: sub_id
       }
     })
   }
@@ -53,58 +53,53 @@ async create(createTaskDto: CreateTaskDto) {
   remove(id: number) {
     return `This action removes a #${id} task`;
   }
-  async MaxMark(id:number){
-    let questions = await this.prismaService.question.findMany(
-      {
-        include: {
-          textAnswers:{
-            select: {
-              mark:true
-            }
-          },
-          victorines: true
-        },
-      }
-    );
-   
-    console.log(questions);
-    
-    let taskTotalMark = 0;
-    // questions.forEach(async question=>{
-    //   if(question.type == "VICTORINA"){
-    //     const victorina = await this.prismaService.victorina.findMany({where: {
-    //       id_question: question.id,
-    //     }});
-    const sumTextAnswers = this.prismaService.question.aggregate({
-      _max: {
-        select: {
-          textAnswer: {
-            select: {
-              mark: true
-            }
-          },
-        }
-      },
-    })
-          const options =  this.prismaService.option.aggregate({
-            _max: {
-              mark: true
+  async MaxMark(taskId: number) {
+
+    console.log(taskId);
+
+
+    // let task = await this.prismaService.task.findUnique({
+    //   where: {
+    //     id: taskId
+    //   },
+    //   select: {
+    //     totalMark: true
+    //   }
+    // })
+
+    // let task = await this.prismaService.task.findUnique({
+    //   include: {
+    //     questions: {
+    //       where: 
+    //     }
+    //   }
+    // })
+
+    const task = await this.prismaService.task.findFirst({
+      where: {
+        questions: {
+          some: {
+            textAnswers: {
+              some: {
+                id: 1
+              }
             },
-          }
-          );
-          taskTotalMark = (await options)._max.mark;
-        
-      
-      // if(question.type=="TEXTANSWER"){
-      //   const textAnswers = await this.prismaService.textAnswer.findMany({where: {
-      //     id_question: question.id,
-      //   }});
-      //   textAnswers.forEach(textAnswer=>{
-      //     taskTotalMark+=textAnswer.mark;
-      //   })
-      // }
-   
-    return questions;
+          },
+        },
+      },
+      include: {
+        questions: true
+      }
+    })
+
+// https://www.prisma.io/docs/concepts/components/prisma-client/filtering-and-sorting#filter-conditions-and-operators
+// https://www.prisma.io/docs/reference/api-reference/prisma-client-reference#filter-conditions-and-operators
+    console.log(task);
+
+
+
+
+    return task
   }
 }
 

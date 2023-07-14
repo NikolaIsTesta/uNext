@@ -70,6 +70,7 @@ model Task {
   id_subject   Int
   subject      Subject      @relation(fields: [id_subject], references: [id])
   totalMark Int @default(0)
+  neededMark Int? @default(0)
   questions    Question[]
   usersAnswers UserAnswer[]
 }
