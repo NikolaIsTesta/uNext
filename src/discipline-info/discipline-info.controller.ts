@@ -10,6 +10,7 @@ export class DisciplineInfoController {
   constructor(private readonly disciplineInfoService: DisciplineInfoService) {}
 
   @Get('subscribers/:id')
+  @UseGuards(JwtAuthenticationGuard)
   allSubscribers(@Param('id') id: string) {
     return this.disciplineInfoService.allSub(+id);
   }
@@ -28,8 +29,14 @@ export class DisciplineInfoController {
   @Get('subscribe/:id')
   @UseGuards(JwtAuthenticationGuard)
   async subcribe(@Param('id') subject_id: number, @Req() request: RequestWithUser) {
+    // if (await this.disciplineInfoService.dateCheck(subject_id))
+    // {
+
+    // }
     return this.disciplineInfoService.subscribe(Number(subject_id), request.user.id)
   }
+
+
 
 
 

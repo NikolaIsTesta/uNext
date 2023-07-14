@@ -75,6 +75,11 @@ export class DisciplineInfoService {
     return true
   }
 
+
+  // async dateCheck(subject_id) {
+  //   const subject = await this.subjectsService.
+  // }
+
   update(id: number, updateDisciplineInfoDto: UpdateDisciplineInfoDto) {
     return `This action updates a #${id} disciplineInfo`;
   }

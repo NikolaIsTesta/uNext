@@ -47,6 +47,9 @@ let UsersService = exports.UsersService = class UsersService {
         throw new common_1.HttpException('User with this email does not exist', common_1.HttpStatus.NOT_FOUND);
     }
     async create(studentData) {
+        const defaultFile = await this.filesService.getById(1);
+        if (!defaultFile)
+            await this.filesService.create(undefined);
         const newUser = await this.prismaService.user.create({
             data: studentData,
         });
