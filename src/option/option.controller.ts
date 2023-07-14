@@ -30,4 +30,6 @@ export class OptionController {
   update(@Param('id') id: number) {
     return this.optionService.update(Number(id));
   }
+
+  
 }

@@ -23,4 +23,8 @@ export class TextAnswerController {
   findOne(@Param('id') id: string) {
     return this.textAnswerService.findOne(+id);
   }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateTextAnswerDto) {
+    return this.textAnswerService.update(+id, updateUserDto);
+  }
 }

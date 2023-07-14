@@ -6,6 +6,10 @@ import { UserAnswerService } from '../user-answer/user-answer.service';
 
 @Injectable()
 export class OptionService {
+  MaxMark(arg0: number) {
+    throw new Error('Method not implemented.');
+  }
+  prisma: any;
   constructor(
     private readonly userAnswerService: UserAnswerService,
     private readonly prismaService: PrismaService,
@@ -41,13 +45,30 @@ export class OptionService {
   async update(id: number) {
     const option = await this.findOne(id);
 
-
     // const newOption = await this.prismaService.option.update({
     //   where: { id: id },
     //   data: updateOptionDto,
     // });
     if (option.isCorrect == true) {
+
+      
+      const option = await this.prismaService.option.findUnique({where: {id:id}});
+      // console.log(option)
       option.userAnswer = true;
+      const victorina = await this.prismaService.victorina.findUnique({ where: { id: option.id_victorina } });
+      
+      console.log(victorina)
+      const question = await this.prismaService.question.findUnique({ where: { id: victorina.id_question } });
+      
+    // console.log(question)
+      const task = await this.prismaService.task.findUnique({ where: { id: question.id_task } });
+      // console.log(task)
+      await this.prismaService.task.update({
+        where: { id: task.id },
+        data: { totalMark: {
+          increment: option.mark // увеличиваем значение поля totalMark на option.mark
+        } },
+      });
       const newOption = await this.prismaService.option.update({
            where: { id: id },
            // eslint-disable-next-line prettier/prettier

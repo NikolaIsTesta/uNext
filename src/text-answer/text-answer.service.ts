@@ -40,11 +40,41 @@ export class TextAnswerService {
     );
   }
 
-  update(id: number, updateTextAnswerDto: UpdateTextAnswerDto) {
-    return `This action updates a #${id} textAnswer`;
+  async update(id: number, updateTextAnswerDto: UpdateTextAnswerDto) {
+    const option = await this.findOne(id);
+
+    // const newOption = await this.prismaService.option.update({
+    //   where: { id: id },
+    //   data: updateOptionDto,
+    // });
+    const textAnswer = await this.prismaService.textAnswer.findUnique({where: {id:id}});  
+    console.log(textAnswer);
+    console.log(updateTextAnswerDto);
+    if (textAnswer.answer == updateTextAnswerDto.userAnswer) {
+
+      const question = await this.prismaService.question.findUnique({ where: { id: textAnswer.id_question } });
+      console.log(question);
+    // console.log(question)
+      const task = await this.prismaService.task.findUnique({ where: { id: question.id_task } });
+      // console.log(task)
+      await this.prismaService.task.update({
+        where: { id: task.id },
+        data: { totalMark: {
+          increment: textAnswer.mark // увеличиваем значение поля totalMark на option.mark
+        } },
+      });
+      const newAnswer = await this.prismaService.textAnswer.update({
+           where: { id: id },
+           // eslint-disable-next-line prettier/prettier
+           data: updateTextAnswerDto
+         });
+         return newAnswer
+    }
   }
+  
 
   remove(id: number) {
     return `This action removes a #${id} textAnswer`;
   }
+
 }
