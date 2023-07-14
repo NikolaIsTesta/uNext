@@ -9,6 +9,9 @@ import RequestWithUser from 'src/authentication/requestWithUser.interface';
 export class DisciplineInfoController {
   constructor(private readonly disciplineInfoService: DisciplineInfoService) {}
 
+
+
+  
   @Get('subscribers/:id')
   @UseGuards(JwtAuthenticationGuard)
   allSubscribers(@Param('id') id: string) {

@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateDisciplineInfoDto } from './dto/create-discipline-info.dto';
-import { UpdateDisciplineInfoDto } from './dto/update-discipline-info.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from '../users/users.service';
-import { DisciplineInfo } from './entities/discipline-info.entity';
 import { SubjectsService } from 'src/subjects/subjects.service';
+
+
+
 
 @Injectable()
 export class DisciplineInfoService {
@@ -14,12 +14,15 @@ export class DisciplineInfoService {
     private readonly usersService: UsersService,
   ) {}
 
-   async subscribe(subject_id, student_id) {
+
+
+
+   async subscribe(subjectId, studentId) {
     const subscribed = await this.prismaService.disciplineInfo.findMany({
       where:
       {
-        id_student: student_id,
-        id_subject: subject_id
+        id_student: studentId,
+        id_subject: subjectId
       }
     })
 
@@ -28,61 +31,62 @@ export class DisciplineInfoService {
         }
         return await this.prismaService.disciplineInfo.create({
           data: {
-            id_student: student_id,
-            id_subject: subject_id,
+            id_student: studentId,
+            id_subject: subjectId,
           }   
         });   
     }
 
-  async allSub(sub_id: number) {
-    const discipline = await this.prismaService.disciplineInfo.findMany({
-      where:{
-        id_subject:sub_id
-      }
-    })
-    let subcribers = [];
-    subcribers.length = discipline.length;
-    for (let i = 0; i < discipline.length; i++)
-    {
-      subcribers[i] = await this.usersService.getById(discipline[i].id_student); 
-    }
-    return subcribers;
-  }
 
-  async allSign(student_id: number) {
-    const discipline = await this.prismaService.disciplineInfo.findMany({
+
+
+  async allSub(subjectId: number) {
+      return await this.prismaService.disciplineInfo.findMany({
       where:{
-        id_student:student_id
+        id_subject:subjectId
+      },
+      select: {
+        student: true
       }
     })
-    let subjects = [];
-    subjects.length = discipline.length;
-    for (let i = 0; i < discipline.length; i++)
-      subjects[i] = await this.subjectsService.findOne(discipline[i].id_subject); 
-    return subjects;
   }
 
 
-  async findOneUser(subject_id: number, user_id: number) {
+
+
+  async allSign(studentId: number) {
+      return await this.prismaService.disciplineInfo.findMany({
+        where: {
+          id_student: studentId,
+        },
+        select: {
+          subject: true
+        },
+      });
+   }
+
+
+
+
+  async findOneUser(studentId: number, userId: number) {
     const discipline = await this.prismaService.disciplineInfo.findMany({
       where:{
-        id_student: user_id,
-        id_subject: subject_id
+        id_student: userId,
+        id_subject: studentId
       }
     })
-    if (discipline.length == 0)
-      return false
-    return true
+    if (discipline.length != 0)
+        return true
+    return false
+    
   }
 
 
-   async dateCheck(subject_id) {
-    const subject = await this.subjectsService.findOne(subject_id); 
+
+
+   async dateCheck(subjectId) {
+    const subject = await this.subjectsService.findOne(subjectId); 
     const serverTime = new Date();
-    console.log(serverTime);
-     console.log(serverTime.getTime());
-     console.log(subject.deadline);
-     console.log(subject.deadline.getTime());
     if (serverTime.getTime() > subject.deadline.getTime())
     {
       throw new HttpException(
@@ -90,13 +94,5 @@ export class DisciplineInfoService {
         HttpStatus.FORBIDDEN,)
     }
    }
-
-  update(id: number, updateDisciplineInfoDto: UpdateDisciplineInfoDto) {
-    return `This action updates a #${id} disciplineInfo`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} disciplineInfo`;
-  }
 
 }

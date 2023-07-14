@@ -47,6 +47,7 @@ export class UsersController {
     return this.usersService.remove(+id);
   }
 
+
   @Post('avatar')
   @UseGuards(JwtAuthenticationGuard)
   @UseInterceptors(FileInterceptor('file'))

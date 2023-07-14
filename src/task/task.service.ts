@@ -50,6 +50,6 @@ async create(createTaskDto: CreateTaskDto) {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} task`;
+    
   }
 }
