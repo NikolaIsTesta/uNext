@@ -76,9 +76,20 @@ export class DisciplineInfoService {
   }
 
 
-  // async dateCheck(subject_id) {
-  //   const subject = await this.subjectsService.
-  // }
+   async dateCheck(subject_id) {
+    const subject = await this.subjectsService.findOne(subject_id); 
+    const serverTime = new Date();
+    console.log(serverTime);
+     console.log(serverTime.getTime());
+     console.log(subject.deadline);
+     console.log(subject.deadline.getTime());
+    if (serverTime.getTime() > subject.deadline.getTime())
+    {
+      throw new HttpException(
+        'time is up you can not subscribe anymore',
+        HttpStatus.FORBIDDEN,)
+    }
+   }
 
   update(id: number, updateDisciplineInfoDto: UpdateDisciplineInfoDto) {
     return `This action updates a #${id} disciplineInfo`;
