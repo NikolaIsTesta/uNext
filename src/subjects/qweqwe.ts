@@ -1,4 +1,4 @@
-let questions = await this.prismaService.question.findMany(
+/*let questions = await this.prismaService.question.findMany(
       {
         include: {
           textAnswers:{
@@ -48,4 +48,4 @@ let questions = await this.prismaService.question.findMany(
       //   })
       // }
    
-    return questions;
+    return questions;*/

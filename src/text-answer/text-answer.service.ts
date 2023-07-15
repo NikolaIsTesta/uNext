@@ -40,9 +40,9 @@ export class TextAnswerService {
     );
   }
 
-  async update(id: number, updateTextAnswerDto: UpdateTextAnswerDto) {
-    const option = await this.findOne(id);
-
+  async update(textAnswerID: number, updateTextAnswerDto: UpdateTextAnswerDto) {
+    const textAnswer = await this.findOne(textAnswerID);
+/*
     // const newOption = await this.prismaService.option.update({
     //   where: { id: id },
     //   data: updateOptionDto,
@@ -71,7 +71,37 @@ export class TextAnswerService {
         data: updateTextAnswerDto
       });
       return newAnswer
-    }
+    }*/
+
+    
+     const task = await this.prismaService.task.findFirst({
+      where: {
+        questions: {
+          some: {
+            textAnswers: {
+              some: {
+                id: textAnswerID
+              }
+            },
+          },
+        },
+      },
+    })
+
+
+    await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        totalMark: {
+          increment: textAnswer.mark // увеличиваем значение поля totalMark на option.mark
+        }
+      },
+    });
+
+
+
+
+    
   }
 
 

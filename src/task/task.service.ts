@@ -54,43 +54,34 @@ export class TaskService {
     return `This action removes a #${id} task`;
   }
   async MaxMark(taskId: number) {
-
-    console.log(taskId);
-
-
-    // let task = await this.prismaService.task.findUnique({
-    //   where: {
-    //     id: taskId
-    //   },
-    //   select: {
-    //     totalMark: true
-    //   }
-    // })
-
-    // let task = await this.prismaService.task.findUnique({
-    //   include: {
-    //     questions: {
-    //       where: 
-    //     }
-    //   }
-    // })
-
     const task = await this.prismaService.task.findFirst({
       where: {
         questions: {
           some: {
             textAnswers: {
               some: {
-                id: 1
+                id: 9
               }
             },
           },
         },
       },
-      include: {
-        questions: true
-      }
+      // include: {
+      //   questions: {
+      //     include: {
+      //       textAnswers: true
+      //     }
+      //   }
+      // }
     })
+    /*await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        totalMark: {
+          increment: textAnswer.mark // увеличиваем значение поля totalMark на option.mark
+        }
+      },
+    });*/
 
 // https://www.prisma.io/docs/concepts/components/prisma-client/filtering-and-sorting#filter-conditions-and-operators
 // https://www.prisma.io/docs/reference/api-reference/prisma-client-reference#filter-conditions-and-operators
