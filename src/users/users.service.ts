@@ -10,10 +10,10 @@ export class UsersService {
   constructor(
     private readonly filesService: FilesService,
     private readonly prismaService: PrismaService,
-  ) {}
+  ) { }
 
   static findOne(userId: any) {
-      throw new Error('Method not implemented.');
+    throw new Error('Method not implemented.');
   }
 
 
@@ -100,8 +100,7 @@ export class UsersService {
     return avatar;
   }
 
-  async getAvatar(userId: number)
-  {
+  async getAvatar(userId: number) {
     const user = await this.getById(userId);
     const file = this.filesService.getById(user.id_avatar);
     return (await file).url;

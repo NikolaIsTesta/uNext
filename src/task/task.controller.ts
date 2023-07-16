@@ -24,7 +24,7 @@ export class TaskController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
+    return this.taskService.MaxMark(+id);
   }
 
   @Patch(':id')
@@ -36,4 +36,5 @@ export class TaskController {
   remove(@Param('id') id: string) {
     return this.taskService.remove(+id);
   }
+  
 }

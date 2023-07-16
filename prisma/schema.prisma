@@ -45,7 +45,6 @@ model Subject {
   id              Int              @id @default(autoincrement())
   name            String           @unique
   description     String
-  //TODO: поправить потом 
   id_teacher      Int?
   teacher         User?            @relation(fields: [id_teacher], references: [id])
   disciplineInfos DisciplineInfo[]
@@ -69,7 +68,8 @@ model Task {
   Title        String
   id_subject   Int
   subject      Subject      @relation(fields: [id_subject], references: [id])
-  totalMark Int @default(0)
+  totalMark Int? @default(0)
+  studentMark Int? @default(0)
   questions    Question[]
   usersAnswers UserAnswer[]
 }
@@ -88,7 +88,7 @@ model TextAnswer {
   id          Int          @id @default(autoincrement())
   answer      String
   mark        Int
-  userAnswer  String       @unique
+  userAnswer  String       
   id_question Int
   question    Question     @relation(fields: [id_question], references: [id])
   userAnswers UserAnswer[]

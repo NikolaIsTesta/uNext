@@ -23,4 +23,15 @@ export class TextAnswerController {
   findOne(@Param('id') id: string) {
     return this.textAnswerService.findOne(+id);
   }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateTextAnswerDto) {
+    return this.textAnswerService.update(+id, updateUserDto);
+  }
+
+
+  @Patch('check/:id')
+  ckeckAnswer(@Param('id') id: string, studentAnswer: string) {
+    return this.textAnswerService.ckeckingAnswer(+id, studentAnswer);
+  }
+
 }

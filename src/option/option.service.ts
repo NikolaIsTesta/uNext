@@ -6,10 +6,14 @@ import { UserAnswerService } from '../user-answer/user-answer.service';
 
 @Injectable()
 export class OptionService {
+  MaxMark(arg0: number) {
+    throw new Error('Method not implemented.');
+  }
+  prisma: any;
   constructor(
     private readonly userAnswerService: UserAnswerService,
     private readonly prismaService: PrismaService,
-  ) {}
+  ) { }
   async create(createOptionDto: CreateOptionDto) {
     return await this.prismaService.option.create({
       data: createOptionDto,
@@ -18,8 +22,8 @@ export class OptionService {
 
   async findVictorinaOption(victorin_id: number) {
     return await this.prismaService.option.findMany({
-      where:{
-        id_victorina:victorin_id
+      where: {
+        id_victorina: victorin_id
       }
     })
   }
@@ -38,22 +42,70 @@ export class OptionService {
       HttpStatus.NOT_FOUND,
     );
   }
-  async update(id: number) {
-    const option = await this.findOne(id);
+  
+  async update(OptionId: number, updateOptionDto: UpdateOptionDto) {
+    const option = await this.findOne(OptionId);
+      await this.prismaService.option.update({
+      where: { id: OptionId },
+      data: updateOptionDto,
+     });
+  }
 
 
-    // const newOption = await this.prismaService.option.update({
-    //   where: { id: id },
-    //   data: updateOptionDto,
-    // });
-    if (option.isCorrect == true) {
-      option.userAnswer = true;
-      const newOption = await this.prismaService.option.update({
-           where: { id: id },
-           // eslint-disable-next-line prettier/prettier
-           data: option
-         });
-         return newOption
-    }
+
+  async checkingAnswer(OptionId: number, studentAnswer: boolean) {
+    const option = await this.findOne(OptionId);
+    await this.prismaService.option.update({
+    where: { id: OptionId },
+    data: {
+      userAnswer: studentAnswer
+    },
+   });
+
+   const newMark = option.mark;
+   let userMark: any;
+  if (option.isCorrect == option.userAnswer)
+    userMark = option.mark;
+  else
+    userMark = 0;
+  this.updateMark(OptionId, newMark, userMark)
+
+  }
+
+
+
+  async updateMark(textAnswerID: number, totalMark: number, studentMark: number) {
+    const task = await this.prismaService.task.findFirst({
+      where: {
+        questions: {
+          some: {
+            textAnswers: {
+              some: {
+                id: textAnswerID
+              }
+            },
+          },
+        },
+      },
+    })
+
+    await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        totalMark: {
+          increment: totalMark
+        }
+      },
+    });
+
+    await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        studentMark: {
+          increment: studentMark
+        }
+      },
+    });
+    console.log(studentMark, totalMark)
   }
 }

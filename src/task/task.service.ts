@@ -2,13 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { totalmem } from 'os';
 
 @Injectable()
 export class TaskService {
   constructor(
     private readonly prismaService: PrismaService,
-  ) {}
-async create(createTaskDto: CreateTaskDto) {
+  ) { }
+  async create(createTaskDto: CreateTaskDto) {
     const newTask = await this.prismaService.task.create({
       data: createTaskDto,
     });
@@ -18,8 +19,8 @@ async create(createTaskDto: CreateTaskDto) {
   
   async allSubTask(sub_id: number) {
     return await this.prismaService.task.findMany({
-      where:{
-        id_subject:sub_id
+      where: {
+        id_subject: sub_id
       }
     })
   }
@@ -52,4 +53,44 @@ async create(createTaskDto: CreateTaskDto) {
   remove(id: number) {
     
   }
+  async MaxMark(taskId: number) {
+    const task = await this.prismaService.task.findFirst({
+      where: {
+        questions: {
+          some: {
+            textAnswers: {
+              some: {
+                id: 9
+              }
+            },
+          },
+        },
+      },
+      // include: {
+      //   questions: {
+      //     include: {
+      //       textAnswers: true
+      //     }
+      //   }
+      // }
+    })
+    /*await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        totalMark: {
+          increment: textAnswer.mark // увеличиваем значение поля totalMark на option.mark
+        }
+      },
+    });*/
+
+// https://www.prisma.io/docs/concepts/components/prisma-client/filtering-and-sorting#filter-conditions-and-operators
+// https://www.prisma.io/docs/reference/api-reference/prisma-client-reference#filter-conditions-and-operators
+    console.log(task);
+
+
+
+
+    return task
+  }
 }
+

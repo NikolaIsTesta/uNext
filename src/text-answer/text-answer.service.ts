@@ -10,7 +10,7 @@ export class TextAnswerService {
   constructor(
     private readonly taskService: TaskService,
     private readonly prismaService: PrismaService,
-  ) {}
+  ) { }
   async create(createTextAnswerDto: CreateTextAnswerDto) {
     return await this.prismaService.textAnswer.create({
       data: createTextAnswerDto,
@@ -19,8 +19,8 @@ export class TextAnswerService {
 
   async questTextAnswer(question_id: number) {
     return await this.prismaService.textAnswer.findMany({
-      where:{
-        id_question:question_id
+      where: {
+        id_question: question_id
       }
     })
   }
@@ -40,9 +40,71 @@ export class TextAnswerService {
     );
   }
 
-  update(id: number, updateTextAnswerDto: UpdateTextAnswerDto) {
-    return `This action updates a #${id} textAnswer`;
+  async update(textAnswerID: number, updateTextAnswerDto: UpdateTextAnswerDto) {
+      await this.prismaService.textAnswer.update({
+      where: { id: textAnswerID },
+      data: updateTextAnswerDto,
+     });
   }
+
+
+  async ckeckingAnswer(textAnswerID: number, studentAnswer: string) {
+    const textAnswer = await this.findOne(textAnswerID);
+    await this.prismaService.textAnswer.update({
+    where: { id: textAnswerID },
+    data: {
+      answer: studentAnswer,
+    }
+   });
+
+   const newMark = textAnswer.mark;
+   let userMark: any
+  if (textAnswer.answer == textAnswer.userAnswer)
+    userMark = textAnswer.mark;
+  else
+    userMark = 0;
+  this.updateMark(textAnswerID, newMark, userMark)
+  }
+
+
+
+  async updateMark(textAnswerID: number, totalMark: number, studentMark: number) {
+    const task = await this.prismaService.task.findFirst({
+      where: {
+        questions: {
+          some: {
+            textAnswers: {
+              some: {
+                id: textAnswerID
+              }
+            },
+          },
+        },
+      },
+    })
+
+    await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        totalMark: {
+          increment: totalMark
+        }
+      },
+    });
+
+    await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        studentMark: {
+          increment: studentMark
+        }
+      },
+    });
+    console.log(studentMark, totalMark)
+  }
+
+
+
 
   remove(id: number) {
     return `This action removes a #${id} textAnswer`;

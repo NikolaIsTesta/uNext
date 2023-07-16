@@ -26,8 +26,15 @@ export class OptionController {
   findOne(@Param('id') id: string) {
     return this.optionService.findOne(+id);
   }
-  @Get('answer/:id')
-  update(@Param('id') id: number) {
-    return this.optionService.update(Number(id));
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateOptionDto: CreateOptionDto) {
+    return this.optionService.update(+id, updateOptionDto);
+  }
+  
+
+  @Patch('check/:id')
+  checkAnswer(@Param('id') id: string, studentAnswer: boolean) {
+    return this.optionService.checkingAnswer(+id, studentAnswer);
   }
 }
