@@ -28,8 +28,4 @@ export class QuestionController {
     return this.questionService.findOne(+id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.questionService.remove(+id);
-  }
 }

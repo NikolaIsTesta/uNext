@@ -23,9 +23,4 @@ export class VictorinaController {
     return this.victorinaService.findOne(+id);
   }
 
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.victorinaService.remove(+id);
-  }
 }

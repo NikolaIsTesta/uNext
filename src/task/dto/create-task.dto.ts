@@ -3,7 +3,7 @@ export class CreateTaskDto {
   @IsString()
   description: string;
   @IsString()
-  Title: string;
+  title: string;
   @IsNumber()
   id_subject: number;
 }

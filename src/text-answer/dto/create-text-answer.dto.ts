@@ -4,7 +4,6 @@ export class CreateTextAnswerDto {
     answer:      string
     @IsNumber()
     mark:        number
-    @IsString()
     userAnswer:  string 
     @IsNumber()    
     id_question: number

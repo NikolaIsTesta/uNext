@@ -115,10 +115,4 @@ export class TextAnswerService {
     });
   }
 
-
-
-
-  remove(id: number) {
-    return `This action removes a #${id} textAnswer`;
-  }
 }

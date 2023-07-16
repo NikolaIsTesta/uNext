@@ -22,19 +22,4 @@ export class TaskController {
     return this.taskService.allSubTask(Number(id));
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.MaxMark(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.taskService.update(+id, updateTaskDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.taskService.remove(+id);
-  }
-  
 }

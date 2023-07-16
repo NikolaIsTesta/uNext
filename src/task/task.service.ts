@@ -16,7 +16,6 @@ export class TaskService {
     return newTask;
   }
 
-  
   async allSubTask(sub_id: number) {
     return await this.prismaService.task.findMany({
       where: {
@@ -25,11 +24,6 @@ export class TaskService {
     })
   }
 
-
-
-  findAll() {
-    return `This action returns all task`;
-  }
 
   async findOne(id: number) {
     const task = await this.prismaService.task.findUnique({
@@ -45,52 +39,4 @@ export class TaskService {
       HttpStatus.NOT_FOUND,
     );
   }
-
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
-  }
-
-  remove(id: number) {
-    
-  }
-  async MaxMark(taskId: number) {
-    const task = await this.prismaService.task.findFirst({
-      where: {
-        questions: {
-          some: {
-            textAnswers: {
-              some: {
-                id: 9
-              }
-            },
-          },
-        },
-      },
-      // include: {
-      //   questions: {
-      //     include: {
-      //       textAnswers: true
-      //     }
-      //   }
-      // }
-    })
-    /*await this.prismaService.task.update({
-      where: { id: task.id },
-      data: {
-        totalMark: {
-          increment: textAnswer.mark // увеличиваем значение поля totalMark на option.mark
-        }
-      },
-    });*/
-
-// https://www.prisma.io/docs/concepts/components/prisma-client/filtering-and-sorting#filter-conditions-and-operators
-// https://www.prisma.io/docs/reference/api-reference/prisma-client-reference#filter-conditions-and-operators
-    console.log(task);
-
-
-
-
-    return task
-  }
 }
-

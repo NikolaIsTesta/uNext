@@ -65,7 +65,7 @@ model DisciplineInfo {
 model Task {
   id           Int          @id @default(autoincrement())
   description  String
-  Title        String
+  title        String
   id_subject   Int
   //is_answered Boolean
   subject      Subject      @relation(fields: [id_subject], references: [id])
@@ -89,7 +89,7 @@ model TextAnswer {
   id          Int          @id @default(autoincrement())
   answer      String
   mark        Int
-  userAnswer  String       
+  userAnswer  String?       
   id_question Int
   question    Question     @relation(fields: [id_question], references: [id])
   userAnswers UserAnswer[]
@@ -107,7 +107,7 @@ model Option {
   Text         String
   isCorrect    Boolean
   mark         Int
-  userAnswer   Boolean
+  userAnswer   Boolean?
   id_victorina Int
   victorina    Victorina    @relation(fields: [id_victorina], references: [id])
   userAnswers  UserAnswer[]

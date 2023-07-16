@@ -49,8 +49,4 @@ export class VictorinaService {
       HttpStatus.NOT_FOUND,
     );;
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} victorina`;
-  }
 }

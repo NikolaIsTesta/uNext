@@ -13,16 +13,17 @@ export default class TaskGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const { user } = context.switchToHttp().getRequest();
         const subjectId = request.body.id_subject;
+        // if (user.role.includes(Role.ADMIN)) {
+        //     return true;
+        // }
         try {
             await this.subjectsService.findOne(Number(subjectId));
         } catch (error) {
             return false;
         }
         if (!user || !request.body) {
+        
             return false;
-        }
-        if (user?.role.includes(Role.ADMIN)) {
-            return true;
         }
 
         const userId = user.id;
