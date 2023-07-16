@@ -90,14 +90,14 @@ model TextAnswer {
   answer      String
   mark        Int
   userAnswer  String?       
-  id_question Int
+  id_question Int          @unique
   question    Question     @relation(fields: [id_question], references: [id])
   userAnswers UserAnswer[]
 }
 
 model Victorina {
   id          Int      @id @default(autoincrement())
-  id_question Int
+  id_question Int      @unique
   question    Question @relation(fields: [id_question], references: [id])
   options     Option[]
 }

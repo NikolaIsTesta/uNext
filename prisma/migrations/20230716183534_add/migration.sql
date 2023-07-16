@@ -51,7 +51,7 @@ CREATE TABLE "DisciplineInfo" (
 CREATE TABLE "Task" (
     "id" SERIAL NOT NULL,
     "description" TEXT NOT NULL,
-    "Title" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "id_subject" INTEGER NOT NULL,
     "totalMark" INTEGER DEFAULT 0,
     "studentMark" INTEGER DEFAULT 0,
@@ -74,7 +74,7 @@ CREATE TABLE "TextAnswer" (
     "id" SERIAL NOT NULL,
     "answer" TEXT NOT NULL,
     "mark" INTEGER NOT NULL,
-    "userAnswer" TEXT NOT NULL,
+    "userAnswer" TEXT,
     "id_question" INTEGER NOT NULL,
 
     CONSTRAINT "TextAnswer_pkey" PRIMARY KEY ("id")
@@ -91,10 +91,10 @@ CREATE TABLE "Victorina" (
 -- CreateTable
 CREATE TABLE "Option" (
     "id" SERIAL NOT NULL,
-    "Text" TEXT NOT NULL,
+    "text" TEXT NOT NULL,
     "isCorrect" BOOLEAN NOT NULL,
     "mark" INTEGER NOT NULL,
-    "userAnswer" BOOLEAN NOT NULL,
+    "userAnswer" BOOLEAN,
     "id_victorina" INTEGER NOT NULL,
 
     CONSTRAINT "Option_pkey" PRIMARY KEY ("id")
@@ -116,6 +116,12 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Subject_name_key" ON "Subject"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TextAnswer_id_question_key" ON "TextAnswer"("id_question");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Victorina_id_question_key" ON "Victorina"("id_question");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Option_id_key" ON "Option"("id");
