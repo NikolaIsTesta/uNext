@@ -21,4 +21,10 @@ export class TaskController {
   async subTasks(@Param('id') id: number) {
     return this.taskService.allSubTask(Number(id));
   }
+
+  @Get()
+  async test() {
+    return this.taskService.test();
+  }
+  
 }

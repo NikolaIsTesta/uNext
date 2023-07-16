@@ -15,6 +15,8 @@ export class OptionService {
     private readonly prismaService: PrismaService,
   ) { }
   async create(createOptionDto: CreateOptionDto) {
+    if (createOptionDto.isCorrect == false)
+      createOptionDto.mark = 0
     return await this.prismaService.option.create({
       data: createOptionDto,
     });
@@ -63,7 +65,7 @@ export class OptionService {
    const option = await this.findOne(OptionId);
    const newMark = option.mark;
    let userMark: any;
-  if (option.isCorrect == option.userAnswer)
+  if (option.isCorrect == option.userAnswer || option.userAnswer == true)
     userMark = option.mark;
   else
     userMark = 0;

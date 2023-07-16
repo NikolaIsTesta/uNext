@@ -41,4 +41,34 @@ export class TaskService {
     );
   }
 
+
+  async test() {
+    // const task1 = await this.prismaService.task.findMany({
+    //   where:{
+    //     id: 1
+    //   },
+    //   include:{
+    //     questions:{
+    //       include:{
+    //         victorines:{
+    //           include:{
+    //             options:true
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // })
+
+    // const option = await this.prismaService.option.aggregate({
+    //   _sum:{
+    //     mark: true
+    //   },
+    // })
+ // console.log(task1[0].questions[0].)
+}
+
+
+
+
 }
