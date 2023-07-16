@@ -33,23 +33,43 @@ export class SubjectsController {
     return this.subjectsService.create(createSubjectDto, request.user.id);
   }
 
-  @Get(':id')
+
   @UseGuards(JwtAuthenticationGuard, AuthorGuard)
+  @Get('access/:id')
+  async imTeacher() {
+    return true;
+  }
+
+
+
+
+  @Get(':id')
+  @UseGuards(JwtAuthenticationGuard)
   async findOne(@Param('id') id: string) {
     const subject = await this.subjectsService.findOne(+id);
     return subject;
   }
- // @UseGuards(RoleGuard('ADMIN'))
+
+
+
   @Get()
+  @UseGuards(JwtAuthenticationGuard)
   findAll() {
     return this.subjectsService.findAll();
   }
 
+
+
+  @UseGuards(JwtAuthenticationGuard, AuthorGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSubjectDto: UpdateSubjectDto) {
     return this.subjectsService.update(+id, updateSubjectDto);
   }
 
+
+
+
+  @UseGuards(JwtAuthenticationGuard, AuthorGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.subjectsService.remove(+id);

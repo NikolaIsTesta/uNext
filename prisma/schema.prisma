@@ -22,9 +22,9 @@ enum TypeOfQuestion {
 }
 
 model PublicFile {
-  id   Int    @id @default(1)
-  url  String
-  key  String @default("default.png")
+  id   Int    @id @default(autoincrement())
+  url  String? @default("https://nestjs-onlyup-public-bucket.s3.amazonaws.com/default.png")
+  key  String? @default("default.png")
   User User[]
 }
 
@@ -37,7 +37,7 @@ model User {
   Subject         Subject[]
   role            Role             @default(USER)
   id_avatar       Int              @default(1)
-  avatar          PublicFile?      @relation(fields: [id_avatar], references: [id])
+  avatar          PublicFile      @relation(fields: [id_avatar], references: [id])
   UserAnswers     UserAnswer[]
 }
 

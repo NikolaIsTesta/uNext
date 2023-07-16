@@ -7,8 +7,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 
-
-
 @Injectable()
 export class FilesService {
   constructor(
@@ -17,7 +15,12 @@ export class FilesService {
   ) {}
 
   async create(createFileDto: CreateFileDto) {
-    await this.prismaService.publicFile.create({
+     if (!createFileDto)
+     {
+       await this.prismaService.publicFile.create({data: {url: ""}})
+       return
+     }
+    return await this.prismaService.publicFile.create({
       data: createFileDto,
     });
   }

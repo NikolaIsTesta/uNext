@@ -3,11 +3,10 @@ import { Role } from '@prisma/client';
 import { SubjectsService } from "src/subjects/subjects.service"
 import { UsersService } from "src/users/users.service"
 
-// проверяем, может ли пользователь работать с услугой
+// проверяем, может ли пользователь работать с предметами
 @Injectable()
 export default class AuthorGuard implements CanActivate {
     constructor (private readonly usersService: UsersService, private readonly subjectsService: SubjectsService) {}
-
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const {user, params} = context.switchToHttp().getRequest();
         try {
@@ -16,8 +15,6 @@ export default class AuthorGuard implements CanActivate {
             console.log(user);
             return false;
         }
-        //console.log(params)
-        //console.log("user: " + user + "product: " + params)
         if (!user || !params) {
             return false;
         }
@@ -29,11 +26,9 @@ export default class AuthorGuard implements CanActivate {
         const userId = user.id;
         const subjectsId = Number(params.id);
         const checkedUser = await this.usersService.getById(userId)
-        //console.log("checkedUser: " + checkedUser.id)
         const checkedSubject = await this.subjectsService.findOne(subjectsId)
-        //console.log("checkedProduct: " + checkedSubject.id_teacher)
         
-        // либо ты автор
+        // либо ты учитель
         return (checkedUser.id === checkedSubject.id_teacher);    
     }
 }

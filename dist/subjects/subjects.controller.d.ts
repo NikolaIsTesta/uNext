@@ -14,6 +14,7 @@ export declare class SubjectsController {
         storage: string;
         deadline: Date;
     }, unknown> & {}>;
+    imTeacher(): Promise<boolean>;
     findOne(id: string): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         name: string;

@@ -16,7 +16,7 @@ export class TaskService {
     return newTask;
   }
 
-
+  
   async allSubTask(sub_id: number) {
     return await this.prismaService.task.findMany({
       where: {
@@ -51,7 +51,7 @@ export class TaskService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} task`;
+    
   }
   async MaxMark(taskId: number) {
     const task = await this.prismaService.task.findFirst({

@@ -9,24 +9,40 @@ import RequestWithUser from 'src/authentication/requestWithUser.interface';
 export class DisciplineInfoController {
   constructor(private readonly disciplineInfoService: DisciplineInfoService) {}
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.disciplineInfoService.findOne(+id);
+
+
+  
+  @Get('subscribers/:id')
+  @UseGuards(JwtAuthenticationGuard)
+  allSubscribers(@Param('id') id: string) {
+    return this.disciplineInfoService.allSub(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDisciplineInfoDto: UpdateDisciplineInfoDto) {
-    return this.disciplineInfoService.update(+id, updateDisciplineInfoDto);
+
+
+  @Get('subscriptions')
+  @UseGuards(JwtAuthenticationGuard)
+  allSubscriptions(@Req() request: RequestWithUser) {
+    return this.disciplineInfoService.allSign(request.user.id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.disciplineInfoService.remove(+id);
-  }
+
+
 
   @Get('subscribe/:id')
   @UseGuards(JwtAuthenticationGuard)
   async subcribe(@Param('id') subject_id: number, @Req() request: RequestWithUser) {
+    await this.disciplineInfoService.dateCheck(Number(subject_id));
     return this.disciplineInfoService.subscribe(Number(subject_id), request.user.id)
+  }
+
+
+
+
+
+  @Get('find-subscriber/:id')
+  @UseGuards(JwtAuthenticationGuard)
+  findUser(@Param('id') id: string, @Req() request: RequestWithUser) {
+    return this.disciplineInfoService.findOneUser(+id, request.user.id);
   }
 }

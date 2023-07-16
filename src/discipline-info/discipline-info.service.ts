@@ -1,62 +1,98 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateDisciplineInfoDto } from './dto/create-discipline-info.dto';
-import { UpdateDisciplineInfoDto } from './dto/update-discipline-info.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from '../users/users.service';
-import { DisciplineInfo } from './entities/discipline-info.entity';
+import { SubjectsService } from 'src/subjects/subjects.service';
+
+
+
 
 @Injectable()
 export class DisciplineInfoService {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly subjectsService: SubjectsService,
     private readonly usersService: UsersService,
-  ) { }
+  ) {}
 
-  async subscribe(subject_id, student_id) {
+
+
+
+   async subscribe(subjectId, studentId) {
     const subscribed = await this.prismaService.disciplineInfo.findMany({
       where:
       {
-        id_student: student_id,
-        id_subject: subject_id
+        id_student: studentId,
+        id_subject: subjectId
       }
     })
 
     if (subscribed.length != 0) {
-      throw new HttpException('User has already subscribed to the course', HttpStatus.BAD_REQUEST);
+          throw new HttpException('User has already subscribed to the course', HttpStatus.BAD_REQUEST);
+        }
+        return await this.prismaService.disciplineInfo.create({
+          data: {
+            id_student: studentId,
+            id_subject: subjectId,
+          }   
+        });   
     }
-    return await this.prismaService.disciplineInfo.create({
-      data: {
-        id_student: student_id,
-        id_subject: subject_id,
-      }
-    });
-  }
 
-  // TODO: Rework with relations
-  async allSub(sub_id: number) {
-    const discipline = await this.prismaService.disciplineInfo.findMany({
-      where: {
-        id_subject: sub_id
+
+
+
+  async allSub(subjectId: number) {
+      return await this.prismaService.disciplineInfo.findMany({
+      where:{
+        id_subject:subjectId
+      },
+      select: {
+        student: true
       }
     })
-    let subcribers = [];
-    subcribers.length = discipline.length;
-    for (let i = 0; i < discipline.length; i++) {
-      subcribers[i] = await this.usersService.getById(discipline[i].id_student);
+  }
+
+
+
+
+  async allSign(studentId: number) {
+      return await this.prismaService.disciplineInfo.findMany({
+        where: {
+          id_student: studentId,
+        },
+        select: {
+          subject: true
+        },
+      });
+   }
+
+
+
+
+  async findOneUser(studentId: number, userId: number) {
+    const discipline = await this.prismaService.disciplineInfo.findMany({
+      where:{
+        id_student: userId,
+        id_subject: studentId
+      }
+    })
+    if (discipline.length != 0)
+        return true
+    return false
+    
+  }
+
+
+
+
+   async dateCheck(subjectId) {
+    const subject = await this.subjectsService.findOne(subjectId); 
+    const serverTime = new Date();
+    if (serverTime.getTime() > subject.deadline.getTime())
+    {
+      throw new HttpException(
+        'time is up you can not subscribe anymore',
+        HttpStatus.FORBIDDEN,)
     }
-    return subcribers;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} disciplineInfo`;
-  }
-
-  update(id: number, updateDisciplineInfoDto: UpdateDisciplineInfoDto) {
-    return `This action updates a #${id} disciplineInfo`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} disciplineInfo`;
-  }
+   }
 
 }

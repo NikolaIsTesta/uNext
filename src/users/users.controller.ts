@@ -18,6 +18,7 @@ import RequestWithUser from 'src/authentication/requestWithUser.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
 import { ApiTags } from '@nestjs/swagger';
+import RoleGuard from 'src/guards/checkingRoles.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -25,14 +26,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @UseGuards(RoleGuard('ADMIN'))
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(RoleGuard('ADMIN'))
   async findOne(@Param('id') id: string) {
     return this.usersService.getById(Number(id));
   }
+  
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
@@ -42,6 +46,7 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+
 
   @Post('avatar')
   @UseGuards(JwtAuthenticationGuard)
