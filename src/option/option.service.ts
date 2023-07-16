@@ -42,41 +42,70 @@ export class OptionService {
       HttpStatus.NOT_FOUND,
     );
   }
-  async update(id: number) {
-    const option = await this.findOne(id);
+  
+  async update(OptionId: number, updateOptionDto: UpdateOptionDto) {
+    const option = await this.findOne(OptionId);
+      await this.prismaService.option.update({
+      where: { id: OptionId },
+      data: updateOptionDto,
+     });
+  }
 
-    // const newOption = await this.prismaService.option.update({
-    //   where: { id: id },
-    //   data: updateOptionDto,
-    // });
-    if (option.isCorrect == true) {
 
 
-      const option = await this.prismaService.option.findUnique({ where: { id: id } });
-      // console.log(option)
-      option.userAnswer = true;
-      const victorina = await this.prismaService.victorina.findUnique({ where: { id: option.id_victorina } });
+  async checkingAnswer(OptionId: number, studentAnswer: boolean) {
+    const option = await this.findOne(OptionId);
+    await this.prismaService.option.update({
+    where: { id: OptionId },
+    data: {
+      userAnswer: studentAnswer
+    },
+   });
 
-      console.log(victorina)
-      const question = await this.prismaService.question.findUnique({ where: { id: victorina.id_question } });
+   const newMark = option.mark;
+   let userMark: any;
+  if (option.isCorrect == option.userAnswer)
+    userMark = option.mark;
+  else
+    userMark = 0;
+  this.updateMark(OptionId, newMark, userMark)
 
-      // console.log(question)
-      const task = await this.prismaService.task.findUnique({ where: { id: question.id_task } });
-      // console.log(task)
-      await this.prismaService.task.update({
-        where: { id: task.id },
-        data: {
-          totalMark: {
-            increment: option.mark // увеличиваем значение поля totalMark на option.mark
-          }
+  }
+
+
+
+  async updateMark(textAnswerID: number, totalMark: number, studentMark: number) {
+    const task = await this.prismaService.task.findFirst({
+      where: {
+        questions: {
+          some: {
+            textAnswers: {
+              some: {
+                id: textAnswerID
+              }
+            },
+          },
         },
-      });
-      const newOption = await this.prismaService.option.update({
-        where: { id: id },
-        // eslint-disable-next-line prettier/prettier
-        data: option
-      });
-      return newOption
-    }
+      },
+    })
+
+    await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        totalMark: {
+          increment: totalMark
+        }
+      },
+    });
+
+    await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        studentMark: {
+          increment: studentMark
+        }
+      },
+    });
+    console.log(studentMark, totalMark)
   }
 }

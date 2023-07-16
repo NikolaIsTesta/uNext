@@ -27,4 +27,11 @@ export class TextAnswerController {
   update(@Param('id') id: string, @Body() updateUserDto: UpdateTextAnswerDto) {
     return this.textAnswerService.update(+id, updateUserDto);
   }
+
+
+  @Patch('check/:id')
+  ckeckAnswer(@Param('id') id: string, studentAnswer: string) {
+    return this.textAnswerService.ckeckingAnswer(+id, studentAnswer);
+  }
+
 }

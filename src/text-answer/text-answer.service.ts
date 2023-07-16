@@ -41,40 +41,35 @@ export class TextAnswerService {
   }
 
   async update(textAnswerID: number, updateTextAnswerDto: UpdateTextAnswerDto) {
+      await this.prismaService.textAnswer.update({
+      where: { id: textAnswerID },
+      data: updateTextAnswerDto,
+     });
+  }
+
+
+  async ckeckingAnswer(textAnswerID: number, studentAnswer: string) {
     const textAnswer = await this.findOne(textAnswerID);
-/*
-    // const newOption = await this.prismaService.option.update({
-    //   where: { id: id },
-    //   data: updateOptionDto,
-    // });
-    const textAnswer = await this.prismaService.textAnswer.findUnique({ where: { id: id } });
-    console.log(textAnswer);
-    console.log(updateTextAnswerDto);
-    if (textAnswer.answer == updateTextAnswerDto.userAnswer) {
+    await this.prismaService.textAnswer.update({
+    where: { id: textAnswerID },
+    data: {
+      answer: studentAnswer,
+    }
+   });
 
-      const question = await this.prismaService.question.findUnique({ where: { id: textAnswer.id_question } });
-      console.log(question);
-      // console.log(question)
-      const task = await this.prismaService.task.findUnique({ where: { id: question.id_task } });
-      // console.log(task)
-      await this.prismaService.task.update({
-        where: { id: task.id },
-        data: {
-          totalMark: {
-            increment: textAnswer.mark // увеличиваем значение поля totalMark на option.mark
-          }
-        },
-      });
-      const newAnswer = await this.prismaService.textAnswer.update({
-        where: { id: id },
-        // eslint-disable-next-line prettier/prettier
-        data: updateTextAnswerDto
-      });
-      return newAnswer
-    }*/
+   const newMark = textAnswer.mark;
+   let userMark: any
+  if (textAnswer.answer == textAnswer.userAnswer)
+    userMark = textAnswer.mark;
+  else
+    userMark = 0;
+  this.updateMark(textAnswerID, newMark, userMark)
+  }
 
-    
-     const task = await this.prismaService.task.findFirst({
+
+
+  async updateMark(textAnswerID: number, totalMark: number, studentMark: number) {
+    const task = await this.prismaService.task.findFirst({
       where: {
         questions: {
           some: {
@@ -88,25 +83,30 @@ export class TextAnswerService {
       },
     })
 
-
     await this.prismaService.task.update({
       where: { id: task.id },
       data: {
         totalMark: {
-          increment: textAnswer.mark // увеличиваем значение поля totalMark на option.mark
+          increment: totalMark
         }
       },
     });
 
-
-
-
-    
+    await this.prismaService.task.update({
+      where: { id: task.id },
+      data: {
+        studentMark: {
+          increment: studentMark
+        }
+      },
+    });
+    console.log(studentMark, totalMark)
   }
+
+
 
 
   remove(id: number) {
     return `This action removes a #${id} textAnswer`;
   }
-
 }
