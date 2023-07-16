@@ -6,9 +6,9 @@ CREATE TYPE "TypeOfQuestion" AS ENUM ('VICTORINA', 'TEXTANSWER');
 
 -- CreateTable
 CREATE TABLE "PublicFile" (
-    "id" INTEGER NOT NULL DEFAULT 1,
-    "url" TEXT NOT NULL,
-    "key" TEXT NOT NULL DEFAULT 'default.png',
+    "id" SERIAL NOT NULL,
+    "url" TEXT DEFAULT 'https://nestjs-onlyup-public-bucket.s3.amazonaws.com/default.png',
+    "key" TEXT DEFAULT 'default.png',
 
     CONSTRAINT "PublicFile_pkey" PRIMARY KEY ("id")
 );
@@ -53,7 +53,8 @@ CREATE TABLE "Task" (
     "description" TEXT NOT NULL,
     "Title" TEXT NOT NULL,
     "id_subject" INTEGER NOT NULL,
-    "totalMark" INTEGER NOT NULL DEFAULT 0,
+    "totalMark" INTEGER DEFAULT 0,
+    "studentMark" INTEGER DEFAULT 0,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
@@ -115,9 +116,6 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Subject_name_key" ON "Subject"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "TextAnswer_userAnswer_key" ON "TextAnswer"("userAnswer");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Option_id_key" ON "Option"("id");

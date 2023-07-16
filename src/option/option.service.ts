@@ -54,14 +54,13 @@ export class OptionService {
 
 
   async checkingAnswer(OptionId: number, studentAnswer: boolean) {
-    const option = await this.findOne(OptionId);
     await this.prismaService.option.update({
     where: { id: OptionId },
     data: {
       userAnswer: studentAnswer
     },
    });
-
+   const option = await this.findOne(OptionId);
    const newMark = option.mark;
    let userMark: any;
   if (option.isCorrect == option.userAnswer)

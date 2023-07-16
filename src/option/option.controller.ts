@@ -34,7 +34,7 @@ export class OptionController {
   
 
   @Patch('check/:id')
-  checkAnswer(@Param('id') id: string, studentAnswer: boolean) {
-    return this.optionService.checkingAnswer(+id, studentAnswer);
+  checkAnswer(@Param('id') id: string, studentAnswer: any) {
+    return this.optionService.checkingAnswer(+id, studentAnswer.userAnswer);
   }
 }

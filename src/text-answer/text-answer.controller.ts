@@ -30,8 +30,8 @@ export class TextAnswerController {
 
 
   @Patch('check/:id')
-  ckeckAnswer(@Param('id') id: string, studentAnswer: string) {
-    return this.textAnswerService.ckeckingAnswer(+id, studentAnswer);
+  ckeckAnswer(@Param('id') id: string, @Body() studentAnswer: any) {
+    return this.textAnswerService.ckeckingAnswer(+id, studentAnswer.userAnswer);
   }
 
 }

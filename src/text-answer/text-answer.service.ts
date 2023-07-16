@@ -4,17 +4,30 @@ import { UpdateTextAnswerDto } from './dto/update-text-answer.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserAnswerService } from '../user-answer/user-answer.service';
 import { TaskService } from 'src/task/task.service';
+import { QuestionService } from '../question/question.service';
+
 
 @Injectable()
 export class TextAnswerService {
   constructor(
     private readonly taskService: TaskService,
     private readonly prismaService: PrismaService,
+    private readonly questionService: QuestionService,
   ) { }
   async create(createTextAnswerDto: CreateTextAnswerDto) {
-    return await this.prismaService.textAnswer.create({
-      data: createTextAnswerDto,
-    });
+    const question = await this.questionService.findOne(Number(createTextAnswerDto.id_question));
+    if (question.type == "TEXTANSWER")
+    {
+      return await this.prismaService.textAnswer.create({
+       data: createTextAnswerDto,
+       })
+    }
+    else{
+      throw new HttpException(
+        'The type of question is not a VICTORINA',
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   async questTextAnswer(question_id: number) {
@@ -49,14 +62,14 @@ export class TextAnswerService {
 
 
   async ckeckingAnswer(textAnswerID: number, studentAnswer: string) {
-    const textAnswer = await this.findOne(textAnswerID);
     await this.prismaService.textAnswer.update({
     where: { id: textAnswerID },
     data: {
-      answer: studentAnswer,
+      userAnswer: studentAnswer,
     }
    });
-
+   const textAnswer = await this.findOne(textAnswerID);
+   console.log(studentAnswer)
    const newMark = textAnswer.mark;
    let userMark: any
   if (textAnswer.answer == textAnswer.userAnswer)
@@ -100,7 +113,6 @@ export class TextAnswerService {
         }
       },
     });
-    console.log(studentMark, totalMark)
   }
 
 

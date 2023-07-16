@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "PublicFile" ALTER COLUMN "url" DROP NOT NULL,
-ALTER COLUMN "key" DROP NOT NULL,
-ALTER COLUMN "content_type" DROP NOT NULL;

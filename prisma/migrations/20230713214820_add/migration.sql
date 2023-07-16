@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "PublicFile" ALTER COLUMN "id" DROP DEFAULT;
