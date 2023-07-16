@@ -4,6 +4,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { totalmem } from 'os';
 import { trusted } from 'mongoose';
+import { elementAt } from 'rxjs';
 
 @Injectable()
 export class TaskService {
@@ -11,10 +12,9 @@ export class TaskService {
     private readonly prismaService: PrismaService,
   ) { }
   async create(createTaskDto: CreateTaskDto) {
-    const newTask = await this.prismaService.task.create({
+    return await this.prismaService.task.create({
       data: createTaskDto,
     });
-    return newTask;
   }
 
   async allSubTask(sub_id: number) {
@@ -42,33 +42,83 @@ export class TaskService {
   }
 
 
-  async test() {
-    // const task1 = await this.prismaService.task.findMany({
-    //   where:{
-    //     id: 1
-    //   },
-    //   include:{
-    //     questions:{
-    //       include:{
-    //         victorines:{
-    //           include:{
-    //             options:true
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // })
+  async getStudentMark(taskId: number) {
+    let studentTaskMark: number
+    const checkTextAnswer = await this.prismaService.task.findMany({
+      where:{
+        id: taskId
+      },
+      select:{
+        textAnswer:{
+          select:{
+            mark:true,
+            userAnswer:true,
+            answer:true
+          }
+        }
+      }
+    })
+    checkTextAnswer.forEach(element => {
+      element.textAnswer.forEach(element => {
+        if (element.userAnswer == element.answer)
+        studentTaskMark += element.mark
+      })
+    })
 
-    // const option = await this.prismaService.option.aggregate({
-    //   _sum:{
-    //     mark: true
-    //   },
-    // })
- // console.log(task1[0].questions[0].)
-}
+    const optionMark = await this.prismaService.option.aggregate({
+      _sum:{
+        mark: true
+      },
+      where:{
+        id_task:taskId,
+        userAnswer:true,
+        isCorrect:true
+      }
+    })
+
+    studentTaskMark += optionMark._sum.mark;
+    this.prismaService.task.update({
+      where:{
+        id:taskId
+      },
+      data:{
+        studentMark:studentTaskMark
+      }
+    })
+
+  }
 
 
+  async getTotalMark(taskId: number) {
+     let totalTaskMark: number;
+     const textMark = await this.prismaService.textAnswer.aggregate({
+      _sum:{
+        mark: true
+      },
+      where:{
+        id_task:taskId
+      }
+    })
 
+    const optionAllMark = await this.prismaService.option.aggregate({
+      _sum:{
+        mark: true
+      },
+      where:{
+        id_task:taskId
+      }
+    })
 
+    totalTaskMark += optionAllMark._sum.mark + textMark._sum.mark
+
+    this.prismaService.task.update({
+      where:{
+        id:taskId
+      },
+      data:{
+        totalMark:totalTaskMark
+      }
+    })
+    return totalTaskMark
+  }
 }

@@ -75,6 +75,7 @@ CREATE TABLE "TextAnswer" (
     "answer" TEXT NOT NULL,
     "mark" INTEGER NOT NULL,
     "userAnswer" TEXT,
+    "id_task" INTEGER,
     "id_question" INTEGER NOT NULL,
 
     CONSTRAINT "TextAnswer_pkey" PRIMARY KEY ("id")
@@ -84,6 +85,7 @@ CREATE TABLE "TextAnswer" (
 CREATE TABLE "Victorina" (
     "id" SERIAL NOT NULL,
     "id_question" INTEGER NOT NULL,
+    "id_task" INTEGER,
 
     CONSTRAINT "Victorina_pkey" PRIMARY KEY ("id")
 );
@@ -95,6 +97,7 @@ CREATE TABLE "Option" (
     "isCorrect" BOOLEAN NOT NULL,
     "mark" INTEGER NOT NULL,
     "userAnswer" BOOLEAN,
+    "id_task" INTEGER,
     "id_victorina" INTEGER NOT NULL,
 
     CONSTRAINT "Option_pkey" PRIMARY KEY ("id")
@@ -145,10 +148,16 @@ ALTER TABLE "Task" ADD CONSTRAINT "Task_id_subject_fkey" FOREIGN KEY ("id_subjec
 ALTER TABLE "Question" ADD CONSTRAINT "Question_id_task_fkey" FOREIGN KEY ("id_task") REFERENCES "Task"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "TextAnswer" ADD CONSTRAINT "TextAnswer_id_task_fkey" FOREIGN KEY ("id_task") REFERENCES "Task"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "TextAnswer" ADD CONSTRAINT "TextAnswer_id_question_fkey" FOREIGN KEY ("id_question") REFERENCES "Question"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Victorina" ADD CONSTRAINT "Victorina_id_question_fkey" FOREIGN KEY ("id_question") REFERENCES "Question"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Option" ADD CONSTRAINT "Option_id_task_fkey" FOREIGN KEY ("id_task") REFERENCES "Task"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Option" ADD CONSTRAINT "Option_id_victorina_fkey" FOREIGN KEY ("id_victorina") REFERENCES "Victorina"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

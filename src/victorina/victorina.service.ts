@@ -12,9 +12,10 @@ export class VictorinaService {
 
   // Если вопрос не будет иметь тип викторины, то викторина не будет создана и выдаст сообшение об ошибке
   async create(createVictorinaDto: CreateVictorinaDto) {
-    const question = this.questionService.findOne(Number(createVictorinaDto.id_question));
-    if ((await question).type == 'VICTORINA')
+    const question = await this.questionService.findOne(Number(createVictorinaDto.id_question));
+    if (question.type == 'VICTORINA')
     {
+      createVictorinaDto.id_task = question.id_task
       return await this.prismaService.victorina.create({
        data: createVictorinaDto,
        })

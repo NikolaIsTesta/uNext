@@ -73,6 +73,8 @@ model Task {
   studentMark Int? @default(0)
   questions    Question[]
   usersAnswers UserAnswer[]
+  textAnswer   TextAnswer[]
+  option       Option[]
 }
 
 model Question {
@@ -90,6 +92,8 @@ model TextAnswer {
   answer      String
   mark        Int
   userAnswer  String?       
+  id_task     Int?
+  task        Task?        @relation(fields: [id_task], references: [id])
   id_question Int          @unique
   question    Question     @relation(fields: [id_question], references: [id])
   userAnswers UserAnswer[]
@@ -98,6 +102,7 @@ model TextAnswer {
 model Victorina {
   id          Int      @id @default(autoincrement())
   id_question Int      @unique
+  id_task     Int?
   question    Question @relation(fields: [id_question], references: [id])
   options     Option[]
 }
@@ -108,6 +113,8 @@ model Option {
   isCorrect    Boolean
   mark         Int
   userAnswer   Boolean?
+  id_task      Int?
+  task         Task?         @relation(fields: [id_task], references: [id])
   id_victorina Int
   victorina    Victorina    @relation(fields: [id_victorina], references: [id])
   userAnswers  UserAnswer[]
@@ -122,5 +129,5 @@ model UserAnswer {
   student User @relation(fields: [id_student], references: [id])
   task Task? @relation(fields: [id_task], references: [id])
   textAnswers TextAnswer? @relation(fields: [id_textAnswer], references: [id])
-  OptionAnswers Option? @relation(fields: [id_optionAnswer], references: [id])
+  optionAnswers Option? @relation(fields: [id_optionAnswer], references: [id])
 }
