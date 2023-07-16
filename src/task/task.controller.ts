@@ -30,6 +30,6 @@ export class TaskController {
 
   @Get('total-mark/:id')
   async totalMark(@Param('id') id: string) {
-    return this.taskService.getStudentMark(+id);
+    return this.taskService.getTotalMark(+id);
   }
 }
