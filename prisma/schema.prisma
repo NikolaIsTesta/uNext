@@ -67,6 +67,7 @@ model Task {
   description  String
   Title        String
   id_subject   Int
+  //is_answered Boolean
   subject      Subject      @relation(fields: [id_subject], references: [id])
   totalMark Int? @default(0)
   studentMark Int? @default(0)

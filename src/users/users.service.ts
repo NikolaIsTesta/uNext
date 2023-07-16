@@ -62,9 +62,6 @@ export class UsersService {
 
 
   async create(studentData: CreateUserDto) {
-    const defaultFile = await this.filesService.getById(1);
-     if (!defaultFile)
-        await this.filesService.create(undefined)
     const newUser = await this.prismaService.user.create({
       data: studentData,
     });

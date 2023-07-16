@@ -15,11 +15,6 @@ export class FilesService {
   ) {}
 
   async create(createFileDto: CreateFileDto) {
-     if (!createFileDto)
-     {
-       await this.prismaService.publicFile.create({data: {url: ""}})
-       return
-     }
     return await this.prismaService.publicFile.create({
       data: createFileDto,
     });
