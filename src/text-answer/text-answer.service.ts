@@ -30,10 +30,10 @@ export class TextAnswerService {
     }
   }
 
-  async questTextAnswer(question_id: number) {
-    return await this.prismaService.textAnswer.findMany({
+  async questTextAnswer(questionId: number) {
+    return await this.prismaService.textAnswer.findFirst({
       where: {
-        id_question: question_id
+        id_question: questionId
       }
     })
   }
