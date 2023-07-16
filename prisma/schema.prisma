@@ -104,7 +104,7 @@ model Victorina {
 
 model Option {
   id           Int          @id @unique @default(autoincrement())
-  Text         String
+  text         String
   isCorrect    Boolean
   mark         Int
   userAnswer   Boolean?

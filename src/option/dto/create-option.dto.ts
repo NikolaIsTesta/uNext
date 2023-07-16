@@ -1,7 +1,7 @@
 import { IsNumber, IsString, IsBoolean } from 'class-validator';
 export class CreateOptionDto {
     @IsString()
-    Text:         string
+    text:         string
     @IsBoolean()
     isCorrect:    boolean
     @IsNumber()
