@@ -3,6 +3,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { totalmem } from 'os';
+import { trusted } from 'mongoose';
 
 @Injectable()
 export class TaskService {
@@ -39,4 +40,5 @@ export class TaskService {
       HttpStatus.NOT_FOUND,
     );
   }
+
 }
