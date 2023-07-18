@@ -43,7 +43,7 @@ export class TaskService {
 
 
   async getStudentMark(taskId: number) {
-    let studentTaskMark: number
+    let studentTaskMark = 0;
     const checkTextAnswer = await this.prismaService.task.findMany({
       where:{
         id: taskId
@@ -61,7 +61,7 @@ export class TaskService {
     checkTextAnswer.forEach(element => {
       element.textAnswer.forEach(element => {
         if (element.userAnswer == element.answer)
-        studentTaskMark += element.mark
+        studentTaskMark = studentTaskMark + element.mark
       })
     })
 
@@ -76,8 +76,8 @@ export class TaskService {
       }
     })
 
-    studentTaskMark += optionMark._sum.mark;
-    this.prismaService.task.update({
+    studentTaskMark = studentTaskMark + optionMark._sum.mark;
+    await this.prismaService.task.update({
       where:{
         id:taskId
       },
@@ -109,9 +109,10 @@ export class TaskService {
       }
     })
 
-    totalTaskMark += optionAllMark._sum.mark + textMark._sum.mark
+    totalTaskMark = optionAllMark._sum.mark + textMark._sum.mark
 
-    this.prismaService.task.update({
+
+    await this.prismaService.task.update({
       where:{
         id:taskId
       },

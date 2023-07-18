@@ -25,7 +25,7 @@ export class OptionService {
   }
 
   async findVictorinaOption(victorinaId: number) {
-    return await this.prismaService.option.findFirst({
+    return await this.prismaService.option.findMany({
       where: {
         id_victorina: victorinaId
       }

@@ -34,7 +34,7 @@ export class OptionController {
   
 
   @Patch('check/:id')
-  checkAnswer(@Param('id') id: string, studentAnswer: any) {
-    return this.optionService.checkingAnswer(+id, studentAnswer.userAnswer);
+  async checkAnswer(@Param('id') id: string, studentAnswer: any) {
+    return await this.optionService.checkingAnswer(+id, studentAnswer.userAnswer);
   }
 }
