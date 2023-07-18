@@ -19,13 +19,10 @@ export class QuestionController {
   @Get('from-task/:id')
   async taskQuest(@Param('id') id) {
     return this.questionService.findTaskQuestion(Number(id));
-
-           
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.questionService.findOne(+id);
   }
-
 }

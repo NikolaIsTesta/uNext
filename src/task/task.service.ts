@@ -17,12 +17,20 @@ export class TaskService {
     });
   }
 
-  async allSubTask(sub_id: number) {
+  async allSubTask(subId: number) {
     return await this.prismaService.task.findMany({
       where: {
-        id_subject: sub_id
+        id_subject: subId
       }
     })
+  }
+
+
+  async countTask(subId: number){
+    return await this.prismaService.task.count({
+      where:{
+        id_subject: subId
+    }})
   }
 
 
@@ -61,10 +69,11 @@ export class TaskService {
     checkTextAnswer.forEach(element => {
       element.textAnswer.forEach(element => {
         if (element.userAnswer == element.answer)
-        studentTaskMark = studentTaskMark + element.mark
+        {
+        studentTaskMark = studentTaskMark + element.mark;
+        }
       })
     })
-
     const optionMark = await this.prismaService.option.aggregate({
       _sum:{
         mark: true
@@ -110,8 +119,6 @@ export class TaskService {
     })
 
     totalTaskMark = optionAllMark._sum.mark + textMark._sum.mark
-
-
     await this.prismaService.task.update({
       where:{
         id:taskId

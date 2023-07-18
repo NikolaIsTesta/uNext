@@ -32,4 +32,10 @@ export class TaskController {
   async totalMark(@Param('id') id: string) {
     return this.taskService.getTotalMark(+id);
   }
+
+
+  @Get('subject-task/:id')
+  async getCountAll(@Param('id') id: string) {
+    return this.taskService.countTask(+id);
+  }
 }

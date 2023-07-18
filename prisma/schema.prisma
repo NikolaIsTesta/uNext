@@ -117,6 +117,7 @@ model Option {
   task         Task?         @relation(fields: [id_task], references: [id])
   id_victorina Int
   victorina    Victorina    @relation(fields: [id_victorina], references: [id])
+  
   userAnswers  UserAnswer[]
 }
 
