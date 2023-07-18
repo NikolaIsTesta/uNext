@@ -41,7 +41,28 @@ export class QuestionService {
     throw new HttpException(
       'Question with this id does not exist',
       HttpStatus.NOT_FOUND,
-    );;
+    );
   }
 
+  async getQuestionMark(questionId: number) {
+    const quiz = await this.prismaService.victorina.findFirst({where:{id_question:questionId}})
+    const optionStudentMark = await this.prismaService.option.findFirst({
+      where:{
+        id_task: quiz.id_task,
+        userAnswer: true,
+        isCorrect: true,
+        id_victorina: quiz.id
+      }
+    })
+    const optionMark = await this.prismaService.option.findFirst({
+      where:{
+        id_task: quiz.id_task,
+        isCorrect: true,
+        id_victorina: quiz.id
+      }
+    })
+    if (optionStudentMark)
+      return ([optionStudentMark.mark, optionMark.mark])
+    return ([0, optionMark.mark])
+  }
 }

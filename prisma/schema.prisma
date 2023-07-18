@@ -86,6 +86,8 @@ model Question {
   task        Task           @relation(fields: [id_task], references: [id])
   textAnswers TextAnswer[]
   victorines  Victorina[]
+  questionMark Int?
+  answerMark   Int?
 }
 
 model TextAnswer {
@@ -100,6 +102,7 @@ model TextAnswer {
   userAnswers UserAnswer[]
 }
 
+// TODO баллы за каждое задание
 model Victorina {
   id          Int      @id @default(autoincrement())
   id_question Int      @unique

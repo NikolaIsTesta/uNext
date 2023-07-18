@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { QuestionService } from './question.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import CreateQuestionDto from './dto/create-question.dto';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
 import RequestWithUser from 'src/authentication/requestWithUser.interface';
@@ -24,5 +24,18 @@ export class QuestionController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.questionService.findOne(+id);
+  }
+
+
+  @Get('option/mark/:id')
+  @ApiOperation({ summary: "Получить оценку за определенный вопрос" })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Должен быть ID question, который уже существует в базе данных',
+    type: Number
+  })
+  async fin(@Param('id') id: string) {
+    return await this.questionService.getQuestionMark(+id);
   }
 }

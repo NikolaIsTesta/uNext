@@ -99,8 +99,8 @@ export class UsersService {
 
   async getAvatar(userId: number) {
     const user = await this.getById(userId);
-    const file = this.filesService.getById(user.id_avatar);
-    return (await file).url;
+    const file = await this.filesService.getById(user.id_avatar);
+    return file.url.toString()
   }
 
   async getFormatedDate(userId: number) {
