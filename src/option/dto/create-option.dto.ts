@@ -9,6 +9,7 @@ export class CreateOptionDto {
     userAnswer:   boolean
     @IsNumber()
     id_victorina: number
+    id_task:      number
 }
 
 export default CreateOptionDto;

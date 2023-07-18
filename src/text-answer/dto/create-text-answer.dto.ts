@@ -6,7 +6,8 @@ export class CreateTextAnswerDto {
     mark:        number
     userAnswer:  string 
     @IsNumber()    
-    id_question: number
+    id_question: number   
+    id_task: number
 }
 
 export default CreateTextAnswerDto;

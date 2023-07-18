@@ -15,8 +15,10 @@ export class OptionService {
     private readonly prismaService: PrismaService,
   ) { }
   async create(createOptionDto: CreateOptionDto) {
+    const victorina = await this.prismaService.victorina.findUnique({where:{id:createOptionDto.id_victorina}})
     if (createOptionDto.isCorrect == false)
       createOptionDto.mark = 0
+    createOptionDto.id_task = victorina.id_task
     return await this.prismaService.option.create({
       data: createOptionDto,
     });
@@ -60,53 +62,6 @@ export class OptionService {
     where: { id: OptionId },
     data: {
       userAnswer: studentAnswer
-    },
-   });
-   const option = await this.findOne(OptionId);
-   const newMark = option.mark;
-   let userMark: any;
-  if (option.isCorrect == option.userAnswer || option.userAnswer == true)
-    userMark = option.mark;
-  else
-    userMark = 0;
-  this.updateMark(OptionId, newMark, userMark)
-
-  }
-
-
-
-  async updateMark(textAnswerID: number, totalMark: number, studentMark: number) {
-    const task = await this.prismaService.task.findFirst({
-      where: {
-        questions: {
-          some: {
-            textAnswers: {
-              some: {
-                id: textAnswerID
-              }
-            },
-          },
-        },
-      },
-    })
-
-    await this.prismaService.task.update({
-      where: { id: task.id },
-      data: {
-        totalMark: {
-          increment: totalMark
-        }
-      },
-    });
-
-    await this.prismaService.task.update({
-      where: { id: task.id },
-      data: {
-        studentMark: {
-          increment: studentMark
-        }
-      },
-    });
-    console.log(studentMark, totalMark)
+    }})
   }
 }

@@ -22,9 +22,14 @@ export class TaskController {
     return this.taskService.allSubTask(Number(id));
   }
 
-  @Get()
-  async test() {
-    return this.taskService.test();
+
+  @Get('student-mark/:id')
+  async studentMark(@Param('id') id: string) {
+    return this.taskService.getStudentMark(+id);
   }
-  
+
+  @Get('total-mark/:id')
+  async totalMark(@Param('id') id: string) {
+    return this.taskService.getTotalMark(+id);
+  }
 }

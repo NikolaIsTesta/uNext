@@ -18,6 +18,7 @@ export class TextAnswerService {
     const question = await this.questionService.findOne(Number(createTextAnswerDto.id_question));
     if (question.type == "TEXTANSWER")
     {
+      createTextAnswerDto.id_task = question.id_task;
       return await this.prismaService.textAnswer.create({
        data: createTextAnswerDto,
        })
@@ -62,57 +63,11 @@ export class TextAnswerService {
 
 
   async ckeckingAnswer(textAnswerID: number, studentAnswer: string) {
-    await this.prismaService.textAnswer.update({
+    const textAnswer = await this.prismaService.textAnswer.update({
     where: { id: textAnswerID },
     data: {
       userAnswer: studentAnswer,
     }
-   });
-   const textAnswer = await this.findOne(textAnswerID);
-   console.log(studentAnswer)
-   const newMark = textAnswer.mark;
-   let userMark: any
-  if (textAnswer.answer == textAnswer.userAnswer)
-    userMark = textAnswer.mark;
-  else
-    userMark = 0;
-  this.updateMark(textAnswerID, newMark, userMark)
+   })
   }
-
-
-
-  async updateMark(textAnswerID: number, totalMark: number, studentMark: number) {
-    const task = await this.prismaService.task.findFirst({
-      where: {
-        questions: {
-          some: {
-            textAnswers: {
-              some: {
-                id: textAnswerID
-              }
-            },
-          },
-        },
-      },
-    })
-
-    await this.prismaService.task.update({
-      where: { id: task.id },
-      data: {
-        totalMark: {
-          increment: totalMark
-        }
-      },
-    });
-
-    await this.prismaService.task.update({
-      where: { id: task.id },
-      data: {
-        studentMark: {
-          increment: studentMark
-        }
-      },
-    });
-  }
-
 }
