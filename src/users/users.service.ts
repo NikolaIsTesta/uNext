@@ -106,11 +106,9 @@ export class UsersService {
   async getFormatedDate(userId: number) {
     const user = await this.prismaService.user.findUnique({
       where:{
-        id: 1
+        id: userId
       }
     })
-    console.log(user)
-    const dateUser = user.date_registration;
-    console.log(dateUser)
+    return user.date_registration
   }
 }

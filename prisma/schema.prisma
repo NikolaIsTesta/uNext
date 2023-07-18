@@ -33,7 +33,7 @@ model User {
   name            String
   email           String           @unique
   password        String
-  date_registration DateTime?      @default(now())
+  date_registration DateTime      @default(now())
   disciplineInfos DisciplineInfo[]
   Subject         Subject[]
   role            Role            @default(USER)
