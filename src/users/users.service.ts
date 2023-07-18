@@ -102,4 +102,15 @@ export class UsersService {
     const file = this.filesService.getById(user.id_avatar);
     return (await file).url;
   }
+
+  async getFormatedDate(userId: number) {
+    const user = await this.prismaService.user.findUnique({
+      where:{
+        id: 1
+      }
+    })
+    console.log(user)
+    const dateUser = user.date_registration;
+    console.log(dateUser)
+  }
 }

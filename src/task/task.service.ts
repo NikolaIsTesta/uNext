@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { totalmem } from 'os';
 import { trusted } from 'mongoose';
 import { elementAt } from 'rxjs';
+import { notEqual } from 'assert';
 
 @Injectable()
 export class TaskService {
@@ -15,6 +16,17 @@ export class TaskService {
     return await this.prismaService.task.create({
       data: createTaskDto,
     });
+  }
+
+  async startNewTry(taskId: number) {
+    await this.prismaService.option.updateMany({
+      where:{
+        id_task: taskId
+      },
+      data:{
+        userAnswer: null
+      }
+    })
   }
 
   async allSubTask(subId: number) {

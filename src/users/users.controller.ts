@@ -55,9 +55,17 @@ export class UsersController {
     return this.usersService.addAvatar(request.user.id, file.buffer, file.originalname);
   }
 
-  @Post('get_avatar')
+  @Get('get/avatar')
   @UseGuards(JwtAuthenticationGuard)
   async getAvatar(@Req() request: RequestWithUser) {
     return this.usersService.getAvatar(request.user.id)
   }
+
+
+  @Get('get-date/formated')
+  @UseGuards(JwtAuthenticationGuard)
+  async add(@Req() request: RequestWithUser) {
+    return await this.usersService.getFormatedDate(request.user.id)
+  }
+
 }

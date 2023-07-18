@@ -33,10 +33,11 @@ model User {
   name            String
   email           String           @unique
   password        String
+  date_registration DateTime?      @default(now())
   disciplineInfos DisciplineInfo[]
   Subject         Subject[]
-  role            Role             @default(USER)
-  id_avatar       Int              @default(1)
+  role            Role            @default(USER)
+  id_avatar       Int             @default(1)
   avatar          PublicFile      @relation(fields: [id_avatar], references: [id])
   UserAnswers     UserAnswer[]
 }
@@ -117,7 +118,7 @@ model Option {
   task         Task?         @relation(fields: [id_task], references: [id])
   id_victorina Int
   victorina    Victorina    @relation(fields: [id_victorina], references: [id])
-  
+
   userAnswers  UserAnswer[]
 }
 
