@@ -126,7 +126,8 @@ export class TaskService {
         mark: true
       },
       where:{
-        id_task:taskId
+        id_task:taskId,
+        isCorrect:true
       }
     })
 
@@ -140,5 +141,19 @@ export class TaskService {
       }
     })
     return totalTaskMark
+  }
+
+  async updateStudentMark(taskId: number, newMark: number) {
+    const totalMark = await this.getTotalMark(taskId)
+    if (newMark > totalMark)
+      newMark = totalMark
+    await this.prismaService.task.update({
+      where:{
+      id:taskId
+    },
+      data:{
+        studentMark: newMark
+      }
+  })
   }
 }

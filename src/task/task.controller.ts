@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
 import TaskGuard from 'src/guards/task.guard';
 
@@ -57,5 +57,30 @@ export class TaskController {
   })
   async newTry(@Param('id') id: string) {
     return await this.taskService.startNewTry(+id);
+  }
+
+  @ApiOperation({ summary: "Изменить оценку пользователя вручную" })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Должен быть ID таска, который уже существует в базе данных',
+    type: Number
+  })
+  @ApiBody({
+    required: true,
+    description: 'Нужно отправить :"newMark". Должа быть новая оценка юзера. При превышении максимальной оценки будет просто назначена максимальная оценка',
+    examples:{
+      example:{
+        value:{
+          newMark: 6000
+        }
+      }
+    }
+  })
+  @Patch('update-mark/:id')
+  async updateMark(@Param('id') id: string, @Body() newMark: any)
+  {
+    await this.taskService.updateStudentMark(+id, +newMark.newMark)
+    return "нет, этот метод и не должен ничего возвращать, могу только деняг с php накинуть: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
   }
 }

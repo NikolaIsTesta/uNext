@@ -38,7 +38,7 @@ export class OptionController {
   
   @UseGuards(JwtAuthenticationGuard)
   @Patch('check/:id')
-  async checkAnswer(@Param('id') id: string, studentAnswer: any) {
+  async checkAnswer(@Param('id') id: string, @Body() studentAnswer) {
     return await this.optionService.checkingAnswer(+id, studentAnswer.userAnswer);
   }
 }

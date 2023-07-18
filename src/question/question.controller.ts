@@ -28,11 +28,11 @@ export class QuestionController {
 
 
   @Get('option/mark/:id')
-  @ApiOperation({ summary: "Получить оценку за определенный вопрос" })
+  @ApiOperation({ summary: "Получить оценку за определенный вопрос." })
   @ApiParam({
     name: 'id',
     required: true,
-    description: 'Должен быть ID question, который уже существует в базе данных',
+    description: 'Должен быть ID question, который уже существует в базе данных. Первой приходит оценка пользователя за вопрос, второй максимальный балл за задание',
     type: Number
   })
   async fin(@Param('id') id: string) {
