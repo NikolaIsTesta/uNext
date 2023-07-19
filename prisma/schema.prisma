@@ -72,11 +72,13 @@ model Task {
   //is_answered Boolean
   subject      Subject      @relation(fields: [id_subject], references: [id])
   totalMark Int? @default(0)
-  studentMark Int? @default(0)
+  studentMark  Int? @default(0)
+  tryings       Int? @default(3)
   questions    Question[]
   usersAnswers UserAnswer[]
   textAnswer   TextAnswer[]
   option       Option[]
+
 }
 
 model Question {

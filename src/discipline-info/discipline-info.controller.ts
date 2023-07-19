@@ -23,7 +23,7 @@ export class DisciplineInfoController {
   }
 
 
-  @Get('subscribe/:id')
+  @Get('subscribe/subject/:id')
   @UseGuards(JwtAuthenticationGuard)
   async subcribe(@Param('id') subject_id: number, @Req() request: RequestWithUser) {
     await this.disciplineInfoService.dateCheck(Number(subject_id));

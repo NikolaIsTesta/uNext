@@ -61,6 +61,6 @@ export class QuestionService {
         id_optionAnswer:optionMark.id
       }
     })
-    return [userAnswer.markForOtion, optionMark.mark]
+    return [userAnswer.markForOption, optionMark.mark]
   }
 }

@@ -19,6 +19,21 @@ export class TaskService {
   }
 
   async startNewTry(taskId: number, userId:number) {
+    const task = await this.prismaService.task.findUnique({where:{id:taskId}})
+    console.log(task.tryings)
+    if (--task.tryings <= 0)
+    {
+      throw new HttpException(
+        'attempts are over',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    await this.prismaService.task.update({
+      where:{
+        id:taskId
+      },
+      data:task
+    })
     return await this.prismaService.userAnswer.deleteMany({
       where:{
         id_student: userId
@@ -62,7 +77,7 @@ export class TaskService {
   async getStudentMark(taskId: number, userId: number) {
     const optionMark = await this.prismaService.userAnswer.aggregate({
       _sum:{
-        markForOtion: true
+        markForOption: true
       },
       where:{
         id_student: userId,
@@ -76,10 +91,10 @@ export class TaskService {
         id:userId
       },
       data:{
-        studentMark:optionMark._sum.markForOtion
+        studentMark:optionMark._sum.markForOption
       }
     })
-    return optionMark._sum.markForOtion
+    return optionMark._sum.markForOption
   }
 
 

@@ -19,6 +19,8 @@ CREATE TABLE "User" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "date_registration" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "studentMark" INTEGER DEFAULT 0,
     "role" "Role" NOT NULL DEFAULT 'USER',
     "id_avatar" INTEGER NOT NULL DEFAULT 1,
 
@@ -55,6 +57,7 @@ CREATE TABLE "Task" (
     "id_subject" INTEGER NOT NULL,
     "totalMark" INTEGER DEFAULT 0,
     "studentMark" INTEGER DEFAULT 0,
+    "tryings" INTEGER DEFAULT 7,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
@@ -65,6 +68,8 @@ CREATE TABLE "Question" (
     "title" TEXT NOT NULL,
     "type" "TypeOfQuestion" NOT NULL,
     "id_task" INTEGER NOT NULL,
+    "questionMark" INTEGER,
+    "answerMark" INTEGER,
 
     CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
 );
@@ -96,7 +101,6 @@ CREATE TABLE "Option" (
     "text" TEXT NOT NULL,
     "isCorrect" BOOLEAN NOT NULL,
     "mark" INTEGER NOT NULL,
-    "userAnswer" BOOLEAN,
     "id_task" INTEGER,
     "id_victorina" INTEGER NOT NULL,
 
@@ -110,6 +114,10 @@ CREATE TABLE "UserAnswer" (
     "id_task" INTEGER,
     "id_textAnswer" INTEGER,
     "id_optionAnswer" INTEGER,
+    "markForOption" INTEGER,
+    "userOptionAnswer" BOOLEAN,
+    "userTextAnswer" TEXT,
+    "isCorrect" BOOLEAN,
 
     CONSTRAINT "UserAnswer_pkey" PRIMARY KEY ("id")
 );
