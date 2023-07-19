@@ -26,7 +26,7 @@ export class QuestionController {
     return this.questionService.findOne(+id);
   }
 
-
+  @UseGuards(JwtAuthenticationGuard)
   @Get('option/mark/:id')
   @ApiOperation({ summary: "Получить оценку за определенный вопрос." })
   @ApiParam({
@@ -35,7 +35,7 @@ export class QuestionController {
     description: 'Должен быть ID question, который уже существует в базе данных. Первой приходит оценка пользователя за вопрос, второй максимальный балл за задание',
     type: Number
   })
-  async fin(@Param('id') id: string) {
-    return await this.questionService.getQuestionMark(+id);
+  async getMark(@Param('id') id: string, @Req() request: RequestWithUser) {
+    return await this.questionService.getQuestionMark(+id, request.user.id);
   }
 }

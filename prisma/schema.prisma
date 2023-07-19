@@ -36,6 +36,7 @@ model User {
   date_registration DateTime      @default(now())
   disciplineInfos DisciplineInfo[]
   Subject         Subject[]
+  studentMark     Int?            @default(0)
   role            Role            @default(USER)
   id_avatar       Int             @default(1)
   avatar          PublicFile      @relation(fields: [id_avatar], references: [id])
@@ -86,6 +87,7 @@ model Question {
   task        Task           @relation(fields: [id_task], references: [id])
   textAnswers TextAnswer[]
   victorines  Victorina[]
+  //TODO удалить
   questionMark Int?
   answerMark   Int?
 }
@@ -102,7 +104,6 @@ model TextAnswer {
   userAnswers UserAnswer[]
 }
 
-// TODO баллы за каждое задание
 model Victorina {
   id          Int      @id @default(autoincrement())
   id_question Int      @unique
@@ -116,12 +117,10 @@ model Option {
   text         String
   isCorrect    Boolean
   mark         Int
-  userAnswer   Boolean?
   id_task      Int?
   task         Task?         @relation(fields: [id_task], references: [id])
   id_victorina Int
   victorina    Victorina    @relation(fields: [id_victorina], references: [id])
-
   userAnswers  UserAnswer[]
 }
 
@@ -131,6 +130,10 @@ model UserAnswer {
   id_task         Int?
   id_textAnswer   Int?
   id_optionAnswer Int?
+  markForOption    Int?
+  userOptionAnswer Boolean?
+  userTextAnswer String?
+  isCorrect Boolean?
   student User @relation(fields: [id_student], references: [id])
   task Task? @relation(fields: [id_task], references: [id])
   textAnswers TextAnswer? @relation(fields: [id_textAnswer], references: [id])

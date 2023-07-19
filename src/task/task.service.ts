@@ -18,13 +18,10 @@ export class TaskService {
     });
   }
 
-  async startNewTry(taskId: number) {
-    await this.prismaService.option.updateMany({
+  async startNewTry(taskId: number, userId:number) {
+    return await this.prismaService.userAnswer.deleteMany({
       where:{
-        id_task: taskId
-      },
-      data:{
-        userAnswer: null
+        id_student: userId
       }
     })
   }
@@ -62,51 +59,27 @@ export class TaskService {
   }
 
 
-  async getStudentMark(taskId: number) {
-    let studentTaskMark = 0;
-    const checkTextAnswer = await this.prismaService.task.findMany({
-      where:{
-        id: taskId
-      },
-      select:{
-        textAnswer:{
-          select:{
-            mark:true,
-            userAnswer:true,
-            answer:true
-          }
-        }
-      }
-    })
-    checkTextAnswer.forEach(element => {
-      element.textAnswer.forEach(element => {
-        if (element.userAnswer == element.answer)
-        {
-        studentTaskMark = studentTaskMark + element.mark;
-        }
-      })
-    })
-    const optionMark = await this.prismaService.option.aggregate({
+  async getStudentMark(taskId: number, userId: number) {
+    const optionMark = await this.prismaService.userAnswer.aggregate({
       _sum:{
-        mark: true
+        markForOtion: true
       },
       where:{
-        id_task:taskId,
-        userAnswer:true,
-        isCorrect:true
-      }
+        id_student: userId,
+        isCorrect: true,
+        userOptionAnswer: true
+      },
     })
 
-    studentTaskMark = studentTaskMark + optionMark._sum.mark;
-    await this.prismaService.task.update({
+    await this.prismaService.user.update({
       where:{
-        id:taskId
+        id:userId
       },
       data:{
-        studentMark:studentTaskMark
+        studentMark:optionMark._sum.markForOtion
       }
     })
-
+    return optionMark._sum.markForOtion
   }
 
 

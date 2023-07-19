@@ -55,13 +55,16 @@ export class OptionService {
      });
   }
 
-
-
-  async checkingAnswer(OptionId: number, studentAnswer: boolean) {
-    await this.prismaService.option.update({
-    where: { id: OptionId },
-    data: {
-      userAnswer: studentAnswer
-    }})
+  async checkingAnswer(OptionId: number, studentAnswer: boolean, userId: number) {
+    const option = await this.prismaService.userAnswer.findUnique({where:{id:OptionId}})
+    const user = await this.prismaService.userAnswer.create({
+      data:{
+        userOptionAnswer: studentAnswer,
+        id_student: userId,
+        id_optionAnswer: OptionId,
+        id_task: option.id_task,
+        isCorrect: option.isCorrect
+      }
+    })
   }
 }

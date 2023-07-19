@@ -9,24 +9,18 @@ import RequestWithUser from 'src/authentication/requestWithUser.interface';
 export class DisciplineInfoController {
   constructor(private readonly disciplineInfoService: DisciplineInfoService) {}
 
-
-
   
   @Get('subscribers/:id')
   @UseGuards(JwtAuthenticationGuard)
-  allSubscribers(@Param('id') id: string) {
-    return this.disciplineInfoService.allSub(+id);
+  async allSubscribers(@Param('id') id: string) {
+    return await this.disciplineInfoService.allSub(+id);
   }
-
-
 
   @Get('subscriptions')
   @UseGuards(JwtAuthenticationGuard)
   allSubscriptions(@Req() request: RequestWithUser) {
     return this.disciplineInfoService.allSign(request.user.id);
   }
-
-
 
 
   @Get('subscribe/:id')
@@ -38,11 +32,9 @@ export class DisciplineInfoController {
 
 
 
-
-
   @Get('find-subscriber/:id')
   @UseGuards(JwtAuthenticationGuard)
-  findUser(@Param('id') id: string, @Req() request: RequestWithUser) {
-    return this.disciplineInfoService.findOneUser(+id, request.user.id);
+  async findUser(@Param('id') id: string, @Req() request: RequestWithUser) {
+    return await this.disciplineInfoService.findOneUser(+id, request.user.id);
   }
 }

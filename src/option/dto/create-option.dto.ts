@@ -6,7 +6,6 @@ export class CreateOptionDto {
     isCorrect:    boolean
     @IsNumber()
     mark:         number
-    userAnswer:   boolean
     @IsNumber()
     id_victorina: number
     id_task:      number

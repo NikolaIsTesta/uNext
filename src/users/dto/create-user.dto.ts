@@ -9,6 +9,7 @@ export class CreateUserDto {
   name: string;
   @IsString()
   password: string;
+  studentMark?: number;
 }
 
 export default CreateUserDto;

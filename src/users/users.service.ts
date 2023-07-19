@@ -109,6 +109,6 @@ export class UsersService {
         id: userId
       }
     })
-    return user.date_registration
+    return user.date_registration.toDateString()
   }
 }

@@ -3,6 +3,8 @@ import { TypeOfQuestion } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import CreateQuestionDto from './dto/create-question.dto';
 import {  UserAnswerService } from '../user-answer/user-answer.service';
+import { trusted } from 'mongoose';
+import { DateTime } from 'aws-sdk/clients/devicefarm';
 
 @Injectable()
 export class QuestionService {
@@ -44,16 +46,8 @@ export class QuestionService {
     );
   }
 
-  async getQuestionMark(questionId: number) {
+  async getQuestionMark(questionId: number, userId: number ) {
     const quiz = await this.prismaService.victorina.findFirst({where:{id_question:questionId}})
-    const optionStudentMark = await this.prismaService.option.findFirst({
-      where:{
-        id_task: quiz.id_task,
-        userAnswer: true,
-        isCorrect: true,
-        id_victorina: quiz.id
-      }
-    })
     const optionMark = await this.prismaService.option.findFirst({
       where:{
         id_task: quiz.id_task,
@@ -61,8 +55,12 @@ export class QuestionService {
         id_victorina: quiz.id
       }
     })
-    if (optionStudentMark)
-      return ([optionStudentMark.mark, optionMark.mark])
-    return ([0, optionMark.mark])
+
+    const userAnswer = await this.prismaService.userAnswer.findFirst({
+      where:{
+        id_optionAnswer:optionMark.id
+      }
+    })
+    return [userAnswer.markForOtion, optionMark.mark]
   }
 }

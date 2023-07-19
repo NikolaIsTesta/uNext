@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { CreateOptionDto } from './dto/create-option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { TaskService } from 'src/task/task.service';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
+import RequestWithUser from 'src/authentication/requestWithUser.interface';
 
 @ApiTags('option')
 @Controller('option')
@@ -38,7 +39,7 @@ export class OptionController {
   
   @UseGuards(JwtAuthenticationGuard)
   @Patch('check/:id')
-  async checkAnswer(@Param('id') id: string, @Body() studentAnswer) {
-    return await this.optionService.checkingAnswer(+id, studentAnswer.userAnswer);
+  async checkAnswer(@Param('id') id: string, @Body() studentAnswer, @Req() request: RequestWithUser) {
+    return await this.optionService.checkingAnswer(+id, studentAnswer.userAnswer, request.user.id);
   }
 }

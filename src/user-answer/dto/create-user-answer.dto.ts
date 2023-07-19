@@ -1,11 +1,13 @@
 import { IsDate, IsNumber, IsString } from 'class-validator';
 export class CreateUserAnswerDto {
-    // автоматически присваивается юзеру, который вызвал метод create
+    @IsNumber()
     id_student:     number
-    // думаю стоит попробовать как-то достать этот айдишник с помощью методов
+    @IsNumber()
     id_task:        number
-    // нужно выссчитать с помощью методов(методы для обработки ответов не написаны еще)
+    @IsNumber()
     id_textAnswer:  number
+    @IsNumber()
     id_optionAnswer:number
+    userOptionAnswer: boolean
 }
 export default CreateUserAnswerDto;
