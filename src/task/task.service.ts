@@ -20,8 +20,8 @@ export class TaskService {
 
   async startNewTry(taskId: number, userId:number) {
     const task = await this.prismaService.task.findUnique({where:{id:taskId}})
-    console.log(task.tryings)
-    if (--task.tryings <= 0)
+    console.log(task.trying)
+    if (--task.trying <= 0)
     {
       throw new HttpException(
         'attempts are over',
@@ -130,6 +130,26 @@ export class TaskService {
     })
     return totalTaskMark
   }
+
+  async updateTrying(tasId:number,newTrying: number)
+  {
+    console.log(tasId, newTrying)
+    if (newTrying <= 0)
+    {
+      throw new HttpException(
+        'newTrying must be a positive',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+      return await this.prismaService.task.update({
+        where:{
+          id: tasId
+        },
+        data:{
+          trying: newTrying
+        }
+      })
+  } 
 
   async updateStudentMark(taskId: number, newMark: number) {
     const totalMark = await this.getTotalMark(taskId)

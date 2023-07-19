@@ -57,7 +57,7 @@ CREATE TABLE "Task" (
     "id_subject" INTEGER NOT NULL,
     "totalMark" INTEGER DEFAULT 0,
     "studentMark" INTEGER DEFAULT 0,
-    "tryings" INTEGER DEFAULT 7,
+    "trying" INTEGER DEFAULT 3,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );

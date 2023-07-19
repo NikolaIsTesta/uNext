@@ -6,6 +6,7 @@ export class CreateTaskDto {
   title: string;
   @IsNumber()
   id_subject: number;
+  trying: number
 }
 
 export default CreateTaskDto;

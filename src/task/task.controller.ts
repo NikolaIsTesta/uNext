@@ -85,4 +85,10 @@ export class TaskController {
     await this.taskService.updateStudentMark(+id, +newMark.newMark)
     return "нет, этот метод и не должен ничего возвращать, могу только деняг с php накинуть: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
   }
+
+  @Post('update/trying/:id')
+  async updateTry(@Param('id') id: string, @Body() trying: any)
+  {
+    return await this.taskService.updateTrying(+id, trying.trying);
+  }
 }
