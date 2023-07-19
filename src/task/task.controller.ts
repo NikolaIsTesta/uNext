@@ -14,8 +14,8 @@ export class TaskController {
 
   @Post()
   @UseGuards(JwtAuthenticationGuard, TaskGuard)
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create(createTaskDto);
+  create(@Req() request: RequestWithUser, @Body() createTaskDto: CreateTaskDto) {
+    return this.taskService.create(createTaskDto, request.user.id);
   }
 
   
@@ -79,16 +79,20 @@ export class TaskController {
       }
     }
   })
+
+  
+  @UseGuards(JwtAuthenticationGuard)
   @Patch('update-mark/:id')
-  async updateMark(@Param('id') id: string, @Body() newMark: any)
+  async updateMark(@Param('id') id: string, @Body() newMark: any, @Req() request: RequestWithUser)
   {
-    await this.taskService.updateStudentMark(+id, +newMark.newMark)
+    await this.taskService.updateStudentMark(+id, +newMark.newMark, request.user.id)
     return "нет, этот метод и не должен ничего возвращать, могу только деняг с php накинуть: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Post('update/trying/:id')
-  async updateTry(@Param('id') id: string, @Body() trying: any)
+  async updateTry(@Param('id') id: string, @Body() trying: any, @Req() request: RequestWithUser)
   {
-    return await this.taskService.updateTrying(+id, trying.trying);
+    return await this.taskService.updateTrying(+id, trying.trying, request.user.id);
   }
 }

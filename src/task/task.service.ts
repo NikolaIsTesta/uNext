@@ -12,27 +12,34 @@ export class TaskService {
   constructor(
     private readonly prismaService: PrismaService,
   ) { }
-  async create(createTaskDto: CreateTaskDto) {
-    return await this.prismaService.task.create({
+  async create(createTaskDto: CreateTaskDto, userId:number) {
+    const task = await this.prismaService.task.create({
       data: createTaskDto,
     });
+    await this.prismaService.studentResult.create({
+      data:{
+        id_task: task.id,
+        id_student: userId,
+        attempts: task.trying
+      }
+    })
   }
 
   async startNewTry(taskId: number, userId:number) {
-    const task = await this.prismaService.task.findUnique({where:{id:taskId}})
-    console.log(task.trying)
-    if (--task.trying <= 0)
+    const studentResult = await this.prismaService.studentResult.findFirst({where:{id_task:taskId, id_student:userId}})
+    if (--studentResult.attempts < 0)
     {
       throw new HttpException(
         'attempts are over',
         HttpStatus.BAD_REQUEST,
       );
     }
-    await this.prismaService.task.update({
+    await this.prismaService.studentResult.update({
       where:{
-        id:taskId
+        id_task:taskId,
+        id_student: userId
       },
-      data:task
+      data:studentResult
     })
     return await this.prismaService.userAnswer.deleteMany({
       where:{
@@ -83,12 +90,13 @@ export class TaskService {
         id_student: userId,
         isCorrect: true,
         userOptionAnswer: true
-      },
+      }
     })
 
-    await this.prismaService.user.update({
+    await this.prismaService.studentResult.update({
       where:{
-        id:userId
+        id_student:userId,
+        id_task: taskId
       },
       data:{
         studentMark:optionMark._sum.markForOption
@@ -131,9 +139,8 @@ export class TaskService {
     return totalTaskMark
   }
 
-  async updateTrying(tasId:number,newTrying: number)
+  async updateTrying(tasId:number, newTrying: number, userId: number)
   {
-    console.log(tasId, newTrying)
     if (newTrying <= 0)
     {
       throw new HttpException(
@@ -141,7 +148,7 @@ export class TaskService {
         HttpStatus.BAD_REQUEST,
       );
     }
-      return await this.prismaService.task.update({
+      await this.prismaService.task.update({
         where:{
           id: tasId
         },
@@ -149,15 +156,24 @@ export class TaskService {
           trying: newTrying
         }
       })
+      await this.prismaService.studentResult.update({
+        where:{
+          id_student: userId,
+          id_task: tasId
+        },
+        data:{
+          attempts: newTrying
+        }
+      })
   } 
 
-  async updateStudentMark(taskId: number, newMark: number) {
+  async updateStudentMark(taskId: number, newMark: number, userId: number) {
     const totalMark = await this.getTotalMark(taskId)
     if (newMark > totalMark)
       newMark = totalMark
-    await this.prismaService.task.update({
+    await this.prismaService.studentResult.update({
       where:{
-      id:taskId
+        id_student: userId
     },
       data:{
         studentMark: newMark

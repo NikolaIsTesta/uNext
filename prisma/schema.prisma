@@ -22,25 +22,25 @@ enum TypeOfQuestion {
 }
 
 model PublicFile {
-  id   Int    @id @default(autoincrement())
+  id   Int     @id @default(autoincrement())
   url  String? @default("https://nestjs-onlyup-public-bucket.s3.amazonaws.com/default.png")
   key  String? @default("default.png")
   User User[]
 }
 
 model User {
-  id              Int              @id @default(autoincrement())
-  name            String
-  email           String           @unique
-  password        String
-  date_registration DateTime      @default(now())
-  disciplineInfos DisciplineInfo[]
-  Subject         Subject[]
-  studentMark     Int?            @default(0)
-  role            Role            @default(USER)
-  id_avatar       Int             @default(1)
-  avatar          PublicFile      @relation(fields: [id_avatar], references: [id])
-  UserAnswers     UserAnswer[]
+  id                Int              @id @default(autoincrement())
+  name              String
+  email             String           @unique
+  password          String
+  date_registration DateTime         @default(now())
+  disciplineInfos   DisciplineInfo[]
+  Subject           Subject[]
+  role              Role             @default(USER)
+  id_avatar         Int              @default(1)
+  avatar            PublicFile       @relation(fields: [id_avatar], references: [id])
+  userAnswers       UserAnswer[]
+  studentResult     StudentResult[]
 }
 
 model Subject {
@@ -57,11 +57,11 @@ model Subject {
 }
 
 model DisciplineInfo {
-  id                 Int     @id @default(autoincrement())
-  id_subject         Int
-  subject            Subject @relation(fields: [id_subject], references: [id])
-  id_student         Int
-  student            User?   @relation(fields: [id_student], references: [id])
+  id         Int     @id @default(autoincrement())
+  id_subject Int
+  subject    Subject @relation(fields: [id_subject], references: [id])
+  id_student Int
+  student    User?   @relation(fields: [id_student], references: [id])
 }
 
 model Task {
@@ -69,16 +69,13 @@ model Task {
   description  String
   title        String
   id_subject   Int
-  //is_answered Boolean
   subject      Subject      @relation(fields: [id_subject], references: [id])
-  totalMark Int? @default(0)
-  studentMark  Int? @default(0)
-  trying       Int? @default(3)
+  totalMark    Int?         @default(0)
+  trying       Int?         @default(3)
   questions    Question[]
   usersAnswers UserAnswer[]
   textAnswer   TextAnswer[]
   option       Option[]
-
 }
 
 model Question {
@@ -89,16 +86,13 @@ model Question {
   task        Task           @relation(fields: [id_task], references: [id])
   textAnswers TextAnswer[]
   victorines  Victorina[]
-  //TODO удалить
-  questionMark Int?
-  answerMark   Int?
 }
 
 model TextAnswer {
   id          Int          @id @default(autoincrement())
   answer      String
   mark        Int
-  userAnswer  String?       
+  userAnswer  String?
   id_task     Int?
   task        Task?        @relation(fields: [id_task], references: [id])
   id_question Int          @unique
@@ -120,24 +114,33 @@ model Option {
   isCorrect    Boolean
   mark         Int
   id_task      Int?
-  task         Task?         @relation(fields: [id_task], references: [id])
+  task         Task?        @relation(fields: [id_task], references: [id])
   id_victorina Int
   victorina    Victorina    @relation(fields: [id_victorina], references: [id])
   userAnswers  UserAnswer[]
 }
 
 model UserAnswer {
-  id              Int    @id @default(autoincrement())
-  id_student      Int
-  id_task         Int?
-  id_textAnswer   Int?
-  id_optionAnswer Int?
+  id               Int         @id @default(autoincrement())
+  id_student       Int
+  id_task          Int?
+  id_textAnswer    Int?
+  id_optionAnswer  Int?
   markForOption    Int?
   userOptionAnswer Boolean?
-  userTextAnswer String?
-  isCorrect Boolean?
-  student User @relation(fields: [id_student], references: [id])
-  task Task? @relation(fields: [id_task], references: [id])
-  textAnswers TextAnswer? @relation(fields: [id_textAnswer], references: [id])
-  optionAnswers Option? @relation(fields: [id_optionAnswer], references: [id])
+  userTextAnswer   String?
+  isCorrect        Boolean?
+  student          User        @relation(fields: [id_student], references: [id])
+  task             Task?       @relation(fields: [id_task], references: [id])
+  textAnswers      TextAnswer? @relation(fields: [id_textAnswer], references: [id])
+  optionAnswers    Option?     @relation(fields: [id_optionAnswer], references: [id])
+}
+
+model StudentResult {
+  id          Int  @id @default(autoincrement())
+  id_student  Int
+  studentMark Int  @default(0)
+  id_task     Int  @unique
+  attempts    Int  @default(1)
+  user        User @relation(fields: [id_student], references: [id])
 }
