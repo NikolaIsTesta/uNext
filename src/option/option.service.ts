@@ -3,6 +3,7 @@ import { CreateOptionDto } from './dto/create-option.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserAnswerService } from '../user-answer/user-answer.service';
+import { MarketplaceCatalog } from 'aws-sdk';
 
 @Injectable()
 export class OptionService {
@@ -56,14 +57,18 @@ export class OptionService {
   }
 
   async checkingAnswer(OptionId: number, studentAnswer: boolean, userId: number) {
-    const option = await this.prismaService.userAnswer.findUnique({where:{id:OptionId}})
+    let mark = 0;
+    const option = await this.prismaService.option.findUnique({where:{id:OptionId}})
+    if (studentAnswer == option.isCorrect)
+      mark = option.mark
     const user = await this.prismaService.userAnswer.create({
       data:{
         userOptionAnswer: studentAnswer,
         id_student: userId,
         id_optionAnswer: OptionId,
         id_task: option.id_task,
-        isCorrect: option.isCorrect
+        isCorrect: option.isCorrect,
+        markForOption: mark
       }
     })
   }

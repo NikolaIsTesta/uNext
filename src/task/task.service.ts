@@ -34,10 +34,10 @@ export class TaskService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    
     await this.prismaService.studentResult.update({
       where:{
-        id_task:taskId,
-        id_student: userId
+        id: studentResult.id
       },
       data:studentResult
     })
@@ -89,14 +89,14 @@ export class TaskService {
       where:{
         id_student: userId,
         isCorrect: true,
-        userOptionAnswer: true
+        userOptionAnswer: true,
+        id_task: taskId
       }
     })
-
+    const studentResult = await this.prismaService.studentResult.findFirst({where:{id_student:userId, id_task: taskId}})
     await this.prismaService.studentResult.update({
       where:{
-        id_student:userId,
-        id_task: taskId
+        id: studentResult.id
       },
       data:{
         studentMark:optionMark._sum.markForOption
@@ -130,7 +130,7 @@ export class TaskService {
     totalTaskMark = optionAllMark._sum.mark + textMark._sum.mark
     await this.prismaService.task.update({
       where:{
-        id:taskId
+        id:taskId,
       },
       data:{
         totalMark:totalTaskMark
@@ -139,7 +139,7 @@ export class TaskService {
     return totalTaskMark
   }
 
-  async updateTrying(tasId:number, newTrying: number, userId: number)
+  async updateTrying(taskId:number, newTrying: number, userId: number)
   {
     if (newTrying <= 0)
     {
@@ -150,16 +150,16 @@ export class TaskService {
     }
       await this.prismaService.task.update({
         where:{
-          id: tasId
+          id: taskId
         },
         data:{
           trying: newTrying
         }
       })
+      const studentResult = await this.prismaService.studentResult.findFirst({where:{ id_student: userId,  id_task: taskId}})
       await this.prismaService.studentResult.update({
         where:{
-          id_student: userId,
-          id_task: tasId
+          id: studentResult.id
         },
         data:{
           attempts: newTrying
@@ -171,9 +171,10 @@ export class TaskService {
     const totalMark = await this.getTotalMark(taskId)
     if (newMark > totalMark)
       newMark = totalMark
+      const studentResult = await this.prismaService.studentResult.findFirst({where:{ id_student: userId,  id_task: taskId}})  
     await this.prismaService.studentResult.update({
       where:{
-        id_student: userId
+        id:studentResult.id
     },
       data:{
         studentMark: newMark

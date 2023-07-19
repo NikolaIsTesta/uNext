@@ -46,7 +46,7 @@ export class QuestionService {
     );
   }
 
-  async getQuestionMark(questionId: number, userId: number ) {
+  async getQuestionMark(questionId: number, userId: number,  ) {
     const quiz = await this.prismaService.victorina.findFirst({where:{id_question:questionId}})
     const optionMark = await this.prismaService.option.findFirst({
       where:{
@@ -55,12 +55,16 @@ export class QuestionService {
         id_victorina: quiz.id
       }
     })
-
+ 
     const userAnswer = await this.prismaService.userAnswer.findFirst({
       where:{
-        id_optionAnswer:optionMark.id
+        id_optionAnswer:optionMark.id,
+        id_student:userId
       }
     })
+
+    if (!userAnswer)
+        return [0, optionMark.mark]
     return [userAnswer.markForOption, optionMark.mark]
   }
 }
